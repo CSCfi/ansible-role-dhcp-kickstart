@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author:  Kalle Happonen
+  description: An Ansible role for configuring a DHCP/TFTP/PXE/kickstart service
+  company: CSC
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+  - name: EL
+    versions:
+    - 6
+    - 7
+  categories:
+  - system
+  dependencies: []
