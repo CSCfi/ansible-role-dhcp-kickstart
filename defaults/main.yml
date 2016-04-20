@@ -1,0 +1,3 @@
+---
+dhcp_group: "dhcp_only_hosts"
+dhcp_pxe_group: "dhcp_pxe_hosts"

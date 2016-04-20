@@ -23,13 +23,15 @@
 - name: create_dhcpd_config_dir
   file: path=/etc/dhcp/dhcpd.d state=directory owner=root group=root mode="0755"
 
-- name: create_dhcp_configs
+- name: create_dhcp_config
   template: src=dhcp_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes.conf"
+  when: groups[dhcp_group] is defined
   notify:
     - restart dhcpd
 
-- name: create_dhcp_configs
+- name: create_dhcp_ipxe_configs
   template: src=dhcp_pxe_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_pxe_nodes.conf"
+  when: groups[dhcp_pxe_group] is defined
   notify:
     - restart dhcpd
 
@@ -41,7 +43,9 @@
 
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
-  with_items: groups['pxe_bootable_nodes']
+  with_items: groups[dhcp_pxe_group]
+  when: groups[dhcp_pxe_group] is defined
+
 
 - name: copy_dhcp_pxe_option_config
   copy: src=ipxe.conf dest=/etc/dhcp/dhcpd.d/ipxe.conf owner=root group=root mode="0644"
