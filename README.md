@@ -24,8 +24,10 @@ Usage
 -----
 
 This role works by setting up pxe booting based on groups. It configures PXE
-booting for all hosts in the "pxe_bootable_nodes" group. Each host needs the
-follwing variables in its scope.
+booting for all hosts in the desired group. By default it's "dhcp_pxe_nodes",
+but it can be defined (check defaults/main.yml)
+
+Each host needs the follwing variables in its scope.
 
 Mandatory:
  - mac_address
@@ -39,11 +41,13 @@ Optional:
  - extra_kernel_params (for the kickstart)
 
 The nodes which only need to be set up for DHCP need to be in the
-"dhcp_only_nodes" group. These nodes need the following variables.
+(by default) "dhcp_only_nodes"  group. These nodes need the following 
+variables.
+
  - mac_address
  - ip_address
 
-It also configures a per-group kickstart file for each group which has the
+The role also configures a per-group kickstart file for each group which has the
 "os_disks" variable in its scope. For this it uses the following variables from
 the groups context.
 
