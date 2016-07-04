@@ -32,13 +32,13 @@ Each host needs the follwing variables in its scope.
 Mandatory:
  - mac_address
  - ip_address
- - dhcp_common_domain  (the domain component of the hostname)
  - dhcp_server_ip
  - kickstart_url
  - kernel_url_path (path where kickstart kernel and initrd can be found)
 
 Optional:
  - extra_kernel_params (for the kickstart)
+ - dhcp_domain
 
 The nodes which only need to be set up for DHCP need to be in the
 (by default) "dhcp_only_nodes"  group. These nodes need the following 
