@@ -1,0 +1,64 @@
+---
+- name: Install httpd (Apache)
+  yum: name='httpd' state='present'
+
+- name: Install xinetd
+  yum: name='xinetd' state='present'
+
+- name: Install tftp-server
+  yum: name='tftp-server' state='present'
+
+- name: Ensure httpd is always running
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: Enable tftp
+  lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
+  notify:
+    - restart xinetd
+
+- name: Copy ipxe chainboot undionly.kkpxe
+  copy: src=undionly.kkpxe dest=/var/lib/tftpboot/undionly.kkpxe owner=root group=root mode="0644"
+
+- name: Copy ipxe chainboot undionly.kpxe
+  copy: src=undionly.kpxe dest=/var/lib/tftpboot/undionly.kpxe owner=root group=root mode="0644"
+
+- name: Copy uefi chainboot ipxe-x86.efi
+  copy: src=ipxe-x86.efi dest=/var/lib/tftpboot/ipxe-x86.efi owner=root group=root mode="0644"
+
+- name: Create dhcpd config dir
+  file: path=/etc/dhcp/dhcpd.d state=directory owner=root group=root mode="0755"
+
+- name: Reset selinux context for tftp directory
+  command: restorecon -Rv /var/lib/tftpboot/
+
+- name: Copy pxe chainbooting bootscript
+  copy: src=boot.py dest=/var/www/cgi-bin/boot.py owner=apache group=apache mode="0550"
+
+- name: Copy dhcp pxe option config
+  copy: src=ipxe.conf dest=/etc/dhcp/ipxe.conf owner=root group=root mode="0644"
+
+- name: Create pxe provision directory structure
+  file: path=/var/www/provision state=directory owner=root group=root mode="0755"
+
+- name: Create directories for pxe nodes (host configs), reinstall (to flag host for reinstall), bootstrap script
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0755
+  with_items:
+    - /var/www/provision/nodes
+    - "{{ pxeboot_reinstall_files_path }}"
+    - /var/www/html/bootstrap
+
+  # TODO: use the files module to set the correct context at create time
+- name: Reset selinux context for pxe directory
+  command: restorecon -Rv /var/www/provision/
+
+- name: Set selinux script access context for pxe provision directory
+  command: chcon -R -t httpd_sys_script_rw_t /var/www/provision/
+  notify: restart httpd

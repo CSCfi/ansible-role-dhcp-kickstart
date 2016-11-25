@@ -1,0 +1,17 @@
+{% if use_kickstart %}
+kickstart_url={{ kickstart_url | default('http://' + dhcp_server_ip + '/bootstrap/' + inventory_hostname_short + '.ks')}}
+{% endif %}
+{% if use_autoyast %}
+autoyast_url={{ autoyast_url | default('http://' + dhcp_server_ip + '/bootstrap/' + inventory_hostname_short + '.xml')}}
+autoyast_install_url={{ autoyast_install_url }}
+{% endif %}
+kernel_url_path={{ kernel_url_path }}
+{% if extra_kernel_params is defined %}
+extra_kernel_params={{ extra_kernel_params }}
+{% endif %}
+{% if kernel_name is defined %}
+kernel_name={{ kernel_name }}
+{% endif %}
+{% if initrd_name is defined %}
+initrd_name={{ initrd_name }}
+{% endif %}

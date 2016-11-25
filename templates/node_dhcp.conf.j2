@@ -1,12 +1,11 @@
-# Hosts
-{% for item in groups[dhcp_pxe_group] %}
-host {{ item }} {
-  hardware ethernet {{ hostvars[item]['mac_address'] }};
-  fixed-address {{  hostvars[item]['ip_address'] }};
-  send host-name "{{ item | regex_replace('^([^\.]*).*$', '\\1') }}.{{  hostvars[item]['dhcp_domain'] | default( dhcp_common_domain ) }}";
+host {{ inventory_hostname_short }} {
+  hardware ethernet {{ mac_address }};
+  fixed-address {{  ip_address }};
+  send host-name "{{ inventory_hostname_short }}.{{ dhcp_domain | default( dhcp_common_domain ) }}";
 
+{% if use_pxe %}
   if exists ipxe.http or exists ipxe.efi {
-      filename "http://{{ hostvars[item]['dhcp_server_ip'] }}/cgi-bin/boot.py";
+      filename "http://{{ dhcp_server_ip }}/cgi-bin/boot.py";
   }
   elsif exists user-class and option user-class = "iPXE" {
     # We're already using iPXE, but not a feature-full version,
@@ -38,5 +37,5 @@ host {{ item }} {
     # or misbehaving NICs
     filename "undionly.kpxe";
   }
+{% endif %}
 }
-{% endfor %}

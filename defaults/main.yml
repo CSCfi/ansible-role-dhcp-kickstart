@@ -1,4 +1,19 @@
 ---
-dhcp_group: "dhcp_only_hosts"
-dhcp_pxe_group: "dhcp_pxe_hosts"
-dhcp_kickstart_install_chrony: False
+lang: "en_US.UTF-8"
+keyboard: "fi-latin1"
+autoyast_keyboard: finnish
+timezone: "Europe/Helsinki"
+kickstart_packagesfile: "templates/kickstart-packages.j2"
+kickstart_postfiles:
+ - "templates/kickstart-post.j2"
+generate_hosts_file: false
+dhcp_hosts_file: "/etc/hosts"
+use_dhcp: false
+use_pxe: false
+use_kickstart: true
+use_autoyast: false
+
+# A file in this path is a flag to reinstall the host on it's next boot from the network
+# Note: this is hard coded into the boot.py script, so don't override this!
+pxeboot_reinstall_files_path: /var/www/provision/reinstall
+...
