@@ -1,20 +1,25 @@
 install
 text
-network --noipv6
+network
 
 # The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
 # Ansible has no way of accessing a group's variables, so they are accessed
 # via the first host of the group.
+#
+# What this means is that these template files are deployed onto one host
+# but they are created per host group. The variables are only taken
+# from the deployed host's group_var files and not from the
+# target hosts' group_var files. This complex pattern bypasses this limitation. 
 
 url --url {{ hostvars[groups[item][0]]['install_repo'] }}
 {% for repo in hostvars[groups[item][0]]['additional_repos'] %}
 repo --name={{ repo.name }} --baseurl={{ repo.url }}
 {% endfor %}
-lang en_US.UTF-8
-keyboard fi-latin1
+lang {{ hostvars[groups[item][0]]['lang'] | default(lang) }}
+keyboard {{ hostvars[groups[item][0]]['keyboard'] | default(keyboard) }}
 zerombr
 bootloader --location=mbr --append elevator=deadline
-timezone Europe/Helsinki
+timezone {{ hostvars[groups[item][0]]['timezone'] | default(timezone) }}
 auth --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
 selinux --disabled
@@ -30,46 +35,8 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
-%packages
-@ Base
--NetworkManager
--NetworkManager-bluetooth
--NetworkManager-libnm
--NetworkManager-tui
--NetworkManager-adsl
--NetworkManager-wifi
--NetworkManager-glib
--NetworkManager-team
--NetworkManager-wwan
-%end
+{% include hostvars[groups[item][0]]['kickstart_packagesfile'] | default(kickstart_packagesfile) %}
 
-%post --interpreter /bin/bash --log /root/ks-post.log.1
-mkdir -p /root/.ssh
-{% for key in hostvars[groups[item][0]]['root_keys'] %}
-echo "{{ key }}" >> /root/.ssh/authorized_keys
+{% for postfile in hostvars[groups[item][0]]['kickstart_postfiles'] | default(kickstart_postfiles) %}
+{%   include postfile %}
 {% endfor %}
-chmod 700 /root/.ssh
-chmod 600 /root/.ssh/authorized_keys
-%end
-
-%post --interpreter /bin/bash --log /root/ks-post.log.2
-# Add mellanox ethernet modules to autoload on boot. This way, if a host has a
-# mellanox card, it will come up in the ethernet mode.
-echo mlx4_en >>/etc/modules-load.d/mlx4.conf
-echo bonding >>/etc/modules-load.d/bonding.conf
-modprobe mlx4_en
-modprobe mlx4_ib
-modprobe mlx4_core
-modprobe bonding
-
-#Disable NetworkManger service
-systemctl stop NetworkManager
-systemctl disable NetworkManager
-
-# Disable Ipv6 at the kernel level
-echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
-echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
-
-/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="console=tty0 console=ttyS1,19200n8 ipv6.disable=1 numa={{ hostvars[groups[item][0]]['kernel_numa_param'] | default('on') }}"
-# End post install kernel options update
-%end

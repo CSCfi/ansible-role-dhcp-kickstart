@@ -10,6 +10,8 @@
 
 - name: configure_tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
+  notify:
+    - restart xinetd
 
 - name: copy_ipxe_chainboot
   copy: src=undionly.kkpxe dest=/var/lib/tftpboot/undionly.kkpxe owner=root group=root mode="0644"
@@ -43,9 +45,8 @@
 
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
-  with_items: groups[dhcp_pxe_group]
+  with_items: "{{ groups[dhcp_pxe_group] }}"
   when: groups[dhcp_pxe_group] is defined
-
 
 - name: copy_dhcp_pxe_option_config
   copy: src=ipxe.conf dest=/etc/dhcp/dhcpd.d/ipxe.conf owner=root group=root mode="0644"
@@ -65,7 +66,19 @@
 - name: apache_selinux_context
   command: restorecon -Rv /var/www/provision/
 
+- name: set_provision_directory_selinux_context_type 
+  command: chcon -R -t httpd_sys_script_rw_t /var/www/provision/
+  notify: restart httpd
+
+# The following with-when trickery loops through all the
+# groups and only picks those ones that have the os_disks
+# variable set (= the pxe boot ones as os_disks is a mandatory
+# variable for pxe boot hosts). It looks for the os_disk var
+# in the first host in the group[item]. Using group_names
+# or other tricks will result in looping through the groups
+# multiple times. This lists only once all the groups.
+
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
-  with_items: groups
   when: hostvars[groups[item][0]]['os_disks'] is defined
+  with_items: "{{ groups }}"

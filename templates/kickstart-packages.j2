@@ -1,0 +1,15 @@
+# No @base. @core includes only the minimal install
+# Remove also the networkmanager that is useless for servers
+%packages --nobase
+@core
+-NetworkManager
+-NetworkManager-bluetooth
+-NetworkManager-libnm
+-NetworkManager-tui
+-NetworkManager-adsl
+-NetworkManager-wifi
+-NetworkManager-glib
+-NetworkManager-team
+-NetworkManager-wwan
+%end
+

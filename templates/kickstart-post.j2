@@ -1,0 +1,17 @@
+%post --interpreter /bin/bash --log /root/ks-post.log
+# Set ssh pubkeys
+mkdir -p /root/.ssh
+{% for key in hostvars[groups[item][0]]['root_keys'] %}
+echo "{{ key }}" >> /root/.ssh/authorized_keys
+{% endfor %}
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/authorized_keys
+
+# Disable NetworkManger service
+systemctl stop NetworkManager
+systemctl disable NetworkManager
+
+# Enable automatic reboot on kernel panic
+echo "kernel.panic=10" >> /etc/sysctl.conf
+%end
+
