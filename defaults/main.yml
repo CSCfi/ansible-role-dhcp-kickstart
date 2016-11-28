@@ -7,3 +7,5 @@ timezone: "Europe/Helsinki"
 kickstart_packagesfile: "templates/kickstart-packages.j2"
 kickstart_postfiles:
  - "templates/kickstart-post.j2"
+generate_hosts_file: false
+dhcp_hosts_file: "/etc/hosts"
