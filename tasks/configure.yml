@@ -1,0 +1,34 @@
+---
+- name: create_dhcp_config
+  template: src=dhcp_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes.conf"
+  when: groups[dhcp_group] is defined
+  notify:
+    - restart dhcpd
+
+- name: create_dhcp_ipxe_configs
+  template: src=dhcp_pxe_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_pxe_nodes.conf"
+  when: groups[dhcp_pxe_group] is defined
+  notify:
+    - restart dhcpd
+
+- name: create_pxe_boot_data
+  template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
+  with_items: "{{ groups[dhcp_pxe_group] }}"
+  when: groups[dhcp_pxe_group] is defined
+
+# The following with-when trickery loops through all the
+# groups and only picks those ones that have the os_disks
+# variable set (= the pxe boot ones as os_disks is a mandatory
+# variable for pxe boot hosts). It looks for the os_disk var
+# in the first host in the group[item]. Using group_names
+# or other tricks will result in looping through the groups
+# multiple times. This lists only once all the groups.
+
+- name: create_kickstart_group_files
+  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
+  when: hostvars[groups[item][0]]['os_disks'] is defined
+  with_items: "{{ groups }}"
+
+- name: generate_hosts_file_from_inventory
+  template: src=hosts.j2 dest="{{ dhcp_hosts_file }}" owner=root group=root mode=0644
+  when: generate_hosts_file
