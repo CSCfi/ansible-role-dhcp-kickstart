@@ -43,7 +43,7 @@
 
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
-  with_items: groups[dhcp_pxe_group]
+  with_items: "{{ groups[dhcp_pxe_group] }}"
   when: groups[dhcp_pxe_group] is defined
 
 
