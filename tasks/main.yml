@@ -67,5 +67,5 @@
 
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
-  with_items: groups
+  with_items: "{{ groups }}"
   when: hostvars[groups[item][0]]['os_disks'] is defined
