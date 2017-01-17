@@ -1,7 +1,4 @@
 ---
-pxe_setup: true
-dhcp_group: "dhcp_only_hosts"
-dhcp_pxe_group: "dhcp_pxe_hosts"
 lang: "en_US.UTF-8"
 keyboard: "fi-latin1"
 timezone: "Europe/Helsinki"
@@ -10,3 +7,6 @@ kickstart_postfiles:
  - "templates/kickstart-post.j2"
 generate_hosts_file: false
 dhcp_hosts_file: "/etc/hosts"
+use_dhcp: false
+use_pxe: false
+use_kickstart: true

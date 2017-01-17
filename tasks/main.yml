@@ -1,6 +1,4 @@
 ---
 - include: install.yml
-  when: pxe_setup
 
 - include: configure.yml
-

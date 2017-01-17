@@ -1,7 +1,7 @@
 %post --interpreter /bin/bash --log /root/ks-post.log
 # Set ssh pubkeys
 mkdir -p /root/.ssh
-{% for key in hostvars[groups[item][0]]['root_keys'] %}
+{% for key in root_keys %}
 echo "{{ key }}" >> /root/.ssh/authorized_keys
 {% endfor %}
 chmod 700 /root/.ssh

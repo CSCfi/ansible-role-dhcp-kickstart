@@ -1,34 +1,37 @@
 ---
-- name: create_dhcp_config
-  template: src=dhcp_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes.conf"
-  when: groups[dhcp_group] is defined
-  notify:
-    - restart dhcpd
+- name: Create dhcp config for host
+  template: src=node_dhcp.conf.j2 dest="/etc/dhcp/dhcpd.d/{{ inventory_hostname_short }}.conf"
+  when: use_dhcp or use_pxe
 
-- name: create_dhcp_ipxe_configs
-  template: src=dhcp_pxe_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_pxe_nodes.conf"
-  when: groups[dhcp_pxe_group] is defined
-  notify:
-    - restart dhcpd
+- name: Create pxe boot data (read by boot.py)
+  template: src=node_pxe.conf.j2 dest="/var/www/provision/nodes/{{ inventory_hostname_short }}.conf"
+  when: use_pxe
 
-- name: create_pxe_boot_data
-  template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
-  with_items: "{{ groups[dhcp_pxe_group] }}"
-  when: groups[dhcp_pxe_group] is defined
+- name: Create kickstart file
+  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{ inventory_hostname_short }}.ks"
+  when: use_pxe and use_kickstart
 
-# The following with-when trickery loops through all the
-# groups and only picks those ones that have the os_disks
-# variable set (= the pxe boot ones as os_disks is a mandatory
-# variable for pxe boot hosts). It looks for the os_disk var
-# in the first host in the group[item]. Using group_names
-# or other tricks will result in looping through the groups
-# multiple times. This lists only once all the groups.
+- name: Find all the configs in dhcpd.d directory
+  run_once: true
+  find:
+    paths: "/etc/dhcp/dhcpd.d/"
+    patterns: "*.conf"
+  register: configs
+ 
+- name: Clear hosts config
+  run_once: true
+  shell: "echo '# Ansible ansible-role-dhcp-kickstart managed' > /etc/dhcp/dhcpd_hosts.conf"
 
-- name: create_kickstart_group_files
-  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
-  when: hostvars[groups[item][0]]['os_disks'] is defined
-  with_items: "{{ groups }}"
+- name: Update main dhcpd include file to include all hosts
+  run_once: true
+  shell: "echo 'include \"{{ item.path }}\";' >> /etc/dhcp/dhcpd_hosts.conf"
+  with_items: "{{ configs.files }}"
+  no_log: true # suppress item printout to console
+  notify: restart dhcpd
 
-- name: generate_hosts_file_from_inventory
+- meta: flush_handlers
+
+- name: Generate hosts file from inventory
+  run_once: true
   template: src=hosts.j2 dest="{{ dhcp_hosts_file }}" owner=root group=root mode=0644
   when: generate_hosts_file

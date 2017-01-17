@@ -1,9 +1,12 @@
 ---
 - name: restart dhcpd
   service: name=dhcpd state=restarted
+  delegate_to: "{{ dhcp_delegate_handlers_to | default(omit) }}"
 
 - name: restart xinetd
   service: name=xinetd state=restarted
+  delegate_to: "{{ dhcp_delegate_handlers_to | default(omit) }}"
 
 - name: restart httpd
   service: name=httpd state=restarted
+  delegate_to: "{{ dhcp_delegate_handlers_to | default(omit) }}"
