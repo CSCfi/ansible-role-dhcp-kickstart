@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+# Hosts generated from the ansible hosts file
+{% for host in groups['all'] %}
+{% if hostvars[host].ip_address is defined %}
+{{ hostvars[host].ip_address }} {{ hostvars[host].inventory_hostname_short }}
+{% endif %}
+{% endfor %}
