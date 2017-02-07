@@ -3,7 +3,8 @@ text
 network
 url --url {{ install_repo }}
 {% for repo in additional_repos %}
-repo --name={{ repo.name }} --baseurl={{ repo.url }}
+{# default(omit) doesn't work in templates. the ternary filter thing is a workaround #}
+repo --name={{ repo.name }} --baseurl={{ repo.url }} {{ (repo.options is defined) | ternary(repo.options, '') }}
 {% endfor %}
 lang {{ lang }}
 keyboard {{ keyboard }}

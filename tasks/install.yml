@@ -43,8 +43,8 @@
 - name: Create pxe reinstall directory (to toggle host reinstall)
   file: path=/var/www/provision/reinstall state=directory owner=apache group=apache mode="0755"
 
-- name: Create pxe kickstart directory (kickstart scripts)
-  file: path=/var/www/html/kickstart state=directory owner=apache group=apache mode="0755"
+- name: Create pxe bootstrap script directory
+  file: path=/var/www/html/bootstrap state=directory owner=apache group=apache mode="0755"
 
 - name: Reset selinux context for pxe directory
   command: restorecon -Rv /var/www/provision/

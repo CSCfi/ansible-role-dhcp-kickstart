@@ -1,6 +1,7 @@
 ---
 lang: "en_US.UTF-8"
 keyboard: "fi-latin1"
+autoyast_keyboard: finnish
 timezone: "Europe/Helsinki"
 kickstart_packagesfile: "templates/kickstart-packages.j2"
 kickstart_postfiles:
@@ -10,3 +11,4 @@ dhcp_hosts_file: "/etc/hosts"
 use_dhcp: false
 use_pxe: false
 use_kickstart: true
+use_autoyast: false
