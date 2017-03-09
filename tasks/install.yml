@@ -8,6 +8,12 @@
 - name: Install tftp-server
   yum: name='tftp-server' state='present'
 
+- name: Ensure httpd is always running
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
 - name: Enable tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
   notify:
