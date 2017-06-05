@@ -1,6 +1,9 @@
 ---
-- name: install_apache
+- name: install_apache_httpd
   yum: name='httpd' state='present'
+
+- name: start and enable apache httpd on boot
+  service: name='httpd' state=started enabled=yes
 
 - name: install_xinetd
   yum: name='xinetd' state='present'
