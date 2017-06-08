@@ -41,6 +41,9 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 -NetworkManager-glib
 -NetworkManager-team
 -NetworkManager-wwan
+{% if dhcp_kickstart_install_chrony == false %}
+-chrony
+{% endif %}
 %end
 
 %post --interpreter /bin/bash --log /root/ks-post.log.1

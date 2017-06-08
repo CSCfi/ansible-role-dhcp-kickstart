@@ -68,3 +68,11 @@ Caveats
 
 The role doesn't allow much in the way of kickstart parametrization. It might
 make some assumptions on the system state (e.g DHCP config).
+
+The role by default does not install chrony in the kickstart, set variable
+
+<pre>
+dhcp_kickstart_install_chrony: True
+</pre>
+
+to keep chrony.
