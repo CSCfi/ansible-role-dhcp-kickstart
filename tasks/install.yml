@@ -43,15 +43,19 @@
 - name: Create pxe provision directory structure
   file: path=/var/www/provision state=directory owner=root group=root mode="0755"
 
-- name: Create pxe nodes directory (host configs)
-  file: path=/var/www/provision/nodes state=directory owner=apache group=apache mode="0755"
+- name: Create directories for pxe nodes (host configs), reinstall (to flag host for reinstall), bootstrap script
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0755
+  with_items:
+    - /var/www/provision/nodes
+    - "{{ pxeboot_reinstall_files_path }}"
+    - /var/www/html/bootstrap
 
-- name: Create pxe reinstall directory (to toggle host reinstall)
-  file: path=/var/www/provision/reinstall state=directory owner=apache group=apache mode="0755"
-
-- name: Create pxe bootstrap script directory
-  file: path=/var/www/html/bootstrap state=directory owner=apache group=apache mode="0755"
-
+  # TODO: use the files module to set the correct context at create time
 - name: Reset selinux context for pxe directory
   command: restorecon -Rv /var/www/provision/
 
