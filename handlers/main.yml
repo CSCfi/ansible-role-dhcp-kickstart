@@ -2,6 +2,11 @@
 - name: restart dhcpd
   become: yes
   service: name=dhcpd state=restarted
+  # This handler is always delegated to the pxeboot server because it's called
+  # from tasks/configure.yml which is used for each deployed server.
+  #
+  # The other handlers in this file are not delegated because they are used in 
+  # tasks/install.yml which is only used for deploying a new kickstart server.
   delegate_to: "{{ pxeboot_server }}"
 
 - name: restart xinetd
