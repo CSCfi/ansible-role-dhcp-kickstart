@@ -49,6 +49,7 @@ Mandatory:
  - mac_address
  - ip_address
  - dhcp_server_ip
+ - pxeboot_server
  - use_dhcp (def: false)
  - use_pxe (def: false)
  - use_kickstart (def: true)
@@ -122,6 +123,7 @@ Example
 Host variables
 
 ```yaml
+pxeboot_server: pxeboot-server
 dhcp_server_ip: 192.168.1.1
 use_dhcp: true
 use_pxe: true
@@ -175,19 +177,16 @@ Playbook example snippet
   become: yes
   tasks:
     - name: Configure DHCP and PXE nodes
-      delegate_to: "{{ dhcp_server_ip }}"
       include_role:
         name: ansible-role-dhcp-kickstart
         tasks_from: configure
-      vars:
-        dhcp_delegate_handlers_to: "{{ dhcp_server_ip }}"
 ```
 
 To force (re)install for a host use a task like this
 
 ```yaml
-- name: Create an empty file to toggle (re)install of image for host
-  become: yes
-  file: path="/var/www/provision/reinstall/{{ inventory_hostname_short }}" state=touch owner=apache group=apache mode=0444
-  delegate_to: "{{ dhcp_server_ip }}"
+    - name: Flag hosts for reinstall on next reboot
+      include_role:
+        name: ansible-role-dhcp-kickstart
+        tasks_from: flag-host-for-reinstall.yml
 ```

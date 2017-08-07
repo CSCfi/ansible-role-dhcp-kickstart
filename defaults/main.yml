@@ -12,3 +12,8 @@ use_dhcp: false
 use_pxe: false
 use_kickstart: true
 use_autoyast: false
+
+# A file in this path is a flag to reinstall the host on it's next boot from the network
+# Note: this is hard coded into the boot.py script, so don't override this!
+pxeboot_reinstall_files_path: /var/www/provision/reinstall
+...

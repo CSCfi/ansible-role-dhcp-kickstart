@@ -1,0 +1,10 @@
+---
+# Run on a pxeboot host
+- name: Create empty file to toggle (re)install of image for host
+  file:
+    path: "{{ pxeboot_reinstall_files_path }}/{{ inventory_hostname_short }}"
+    state: touch
+    owner: apache
+    group: apache
+    mode: 0444
+  delegate_to: "{{ pxeboot_server }}"
