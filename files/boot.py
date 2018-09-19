@@ -32,12 +32,11 @@ try:
             pass
 
     f.close()
-    # http://ipxe.org/appnote/memtest # booting an ISO is apparently also sucky and one should not do it
-    # "sanboot URI.iso" failed with http://ipxe.org/3c0c6003
+    # http://forum.ipxe.org/showthread.php?tid=7937&highlight=memtest
+    # https://git.ipxe.org/people/mcb30/memtest.git/commitdiff/fac651cb5f52f4dc2435c5c11ada06215a5b9ec9
+    # there is no "pxe" referenced in memtest86+ 7.5 source code (found inside the iso)
     print "#!ipxe"
-   # print "kernel " + nodesettings['memdisk']
-    print "kernel" + nodesettings['memtest86_usb_path']
-   # print "initrd " + nodesettings['memtest86_usb_path'] + " iso raw"
+    print "kernel " + nodesettings['memtest86_0_path']
     print "boot"
     started = True
 
