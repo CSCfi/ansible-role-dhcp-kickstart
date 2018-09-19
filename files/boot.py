@@ -35,7 +35,10 @@ try:
     # http://ipxe.org/appnote/memtest # booting an ISO is apparently also sucky and one should not do it
     # "sanboot URI.iso" failed with http://ipxe.org/3c0c6003
     print "#!ipxe"
-    print "sanboot " + nodesettings['memtest86_usb_path']
+   # print "kernel " + nodesettings['memdisk']
+    print "kernel" + nodesettings['memtest86_usb_path']
+   # print "initrd " + nodesettings['memtest86_usb_path'] + " iso raw"
+    print "boot"
     started = True
 
 # Catch the exception when the memtest file wasn't found
