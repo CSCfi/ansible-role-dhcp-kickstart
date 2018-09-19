@@ -32,8 +32,10 @@ try:
             pass
 
     f.close()
+    # http://ipxe.org/appnote/memtest # booting an ISO is apparently also sucky and one should not do it
+    # "sanboot URI.iso" failed with http://ipxe.org/3c0c6003
     print "#!ipxe"
-    print "sanboot " + nodesettings['memtest86_iso_path']
+    print "sanboot " + nodesettings['memtest86_usb_path']
     started = True
 
 # Catch the exception when the memtest file wasn't found
