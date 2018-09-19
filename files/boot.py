@@ -1,4 +1,5 @@
 #!/usr/bin/python
+""" Prints an iPXE script to stdout to start a kickstart & more """
 import syslog
 import sys
 import os
@@ -11,7 +12,7 @@ syslog.openlog("boot.py")
 syslog.setlogmask(syslog.LOG_UPTO(syslog.LOG_INFO))
 
 try:
-    # from the name, e.g. c1-3 take c1-3
+    # from the name, e.g. c1-3.cloud.example.org take c1-3
     hostname = socket.gethostbyaddr(os.environ["REMOTE_ADDR"])[0].split(".")[0]
     syslog.syslog(syslog.LOG_DEBUG, "Got boot iPXE request from " + hostname)
 
@@ -40,8 +41,8 @@ except OSError:
     print "#!ipxe"
     print "exit"
 # Catch all other problems
-except Exception as e:
-    print str(e)
-    syslog.syslog(syslog.LOG_ERR, str(e))
+except Exception as exc:
+    print str(exc)
+    syslog.syslog(syslog.LOG_ERR, str(exc))
 
 syslog.closelog()
