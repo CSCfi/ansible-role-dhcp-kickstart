@@ -37,6 +37,11 @@
   when: groups[dhcp_pxe_group] is defined
   notify:
     - restart dhcpd
+    
+- name: install restorecon for selinux
+  package:
+    name: policycoreutils
+    state: installed
 
 - name: ipxe_selinux_context
   command: restorecon -Rv /var/lib/tftpboot/
