@@ -16,6 +16,7 @@ hostname = socket.gethostbyaddr(os.environ["REMOTE_ADDR"])[0].split(".")[0]
 syslog.syslog(syslog.LOG_DEBUG, "Got boot iPXE request from " + hostname)
 
 started = False
+# When a hypervisor restarts without a reinstall/memtest it is expected that the tries fails. 
 try:
     os.stat("/var/www/provision/memtest86/" + hostname)
     os.remove("/var/www/provision/memtest86/" + hostname)
