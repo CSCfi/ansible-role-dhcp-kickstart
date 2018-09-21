@@ -82,3 +82,6 @@
   when:
     - groups[item][0] is defined
     - hostvars[groups[item][0]]['os_disks'] is defined
+
+- name: copy memtest.0 PXE NBP
+  copy: src=memtest.0 dest=/var/www/memtest.0 owner=apache group=apache mode="0440"
