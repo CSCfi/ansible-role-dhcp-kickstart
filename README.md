@@ -39,6 +39,7 @@ Mandatory:
 Optional:
  - extra_kernel_params (for the kickstart)
  - dhcp_domain
+ - memtest86_0_path (for pointing to a memtest.0 PXE NBP)
 
 The nodes which only need to be set up for DHCP need to be in the
 (by default) "dhcp_only_nodes"  group. These nodes need the following 
