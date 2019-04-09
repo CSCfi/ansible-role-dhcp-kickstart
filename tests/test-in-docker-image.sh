@@ -88,7 +88,7 @@ function test_ansible_setup(){
     ansible -m setup -i ${ANSIBLE_INVENTORY} --connection=local localhost
 
     echo "TEST: copy group_vars.."
-    cp -v tests/group_vars .
+    cp -rv tests/group_vars .
 
 }
 
