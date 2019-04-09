@@ -6,7 +6,7 @@ kickstart_url: "http:///{{ dhcp_server_ip }}/myks.ks"
 kernel_url_path: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64//isolinux"
 
 install_repo: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64/"
-additional repos:
+additional_repos:
  - name: "CentOS_Updates"
    url: "http://{{ dhcp_server_ip }}centos.org/7/updates/x86_64/"
 root_password_hash: "$1lolhash"

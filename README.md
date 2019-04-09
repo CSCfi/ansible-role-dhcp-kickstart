@@ -54,7 +54,7 @@ the groups context.
 
 Mandatory:
  - install_repo
- - additional repos
+ - additional_repos
  - root_password_hash
  - os_disks (in the kickstart format, e.g. "sda,sdb")
  - kickstart_partitions (list of kickstart partition instructions)
