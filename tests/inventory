@@ -13,20 +13,30 @@ localhost
 [install]
 localhost
 
-[compute]
-localhost
+[compute1]
+localhost6
+[compute2]
+localhost6
+[compute3]
+localhost6
+
+[dhcp_pxe_hosts]
+pxe_bootable_nodes
+slurm_compute
 
 [pxe_bootable_nodes:children]
-compute
+production
 
 [production:children]
 install
 admin
-#login
+login
 grid
 
 [slurm_service:children]
 install
 
 [slurm_compute:children]
-compute
+compute1
+compute2
+compute3
