@@ -3,7 +3,7 @@
  - hosts: install,compute
    remote_user: root
    vars:
-     - dhcp_kickstart_handle_dhcpd: True
+     - dhcp_kickstart_handle_dhcpd: False
    pre_tasks:
      - name: install dhcpd
        package:
