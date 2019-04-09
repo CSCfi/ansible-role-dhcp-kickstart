@@ -1,2 +1,6 @@
 ip_address: "127.111.111.111"
 mac_address: "aa:aa:aa:ff:ff:ff"
+dhcp_server_ip: "10.0.0.1"
+dhcp_common_domain: "mylocaldomain.int.example.org"
+kickstart_url: "http:///{{ dhcp_server_ip }}/myks.ks"
+kernel_url_path: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64//isolinux"
