@@ -1,4 +1,6 @@
 ---
 
+ip_address: '127.0.1.1'
+mac_address: "00:00:00:00:aa:c1"
 os_disks: "sda"
 ...
