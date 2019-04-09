@@ -2,3 +2,4 @@
 dhcp_group: "dhcp_only_hosts"
 dhcp_pxe_group: "dhcp_pxe_hosts"
 dhcp_kickstart_install_chrony: False
+dhcp_common_domain: "mylocaldomain.int.example.org"
