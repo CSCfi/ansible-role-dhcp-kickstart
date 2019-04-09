@@ -1,3 +1,4 @@
+---
 ip_address: "127.111.111.111"
 mac_address: "aa:aa:aa:ff:ff:ff"
 dhcp_server_ip: "10.0.0.1"
@@ -20,3 +21,4 @@ kickstart_partitions:
  - "logvol /tmp --fstype=ext4 --name=tmp --vgname=vg.os --size=10240"
 root_keys:
  - "ssh-rsa key"
+...

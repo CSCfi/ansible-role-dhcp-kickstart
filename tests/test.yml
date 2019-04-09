@@ -2,5 +2,7 @@
 
  - hosts: install,compute
    remote_user: root
+   vars:
+     - dhcp_kickstart_handle_dhcpd: False
    roles:
      - ansible-role-dhcp-kickstart
