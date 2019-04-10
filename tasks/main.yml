@@ -50,7 +50,7 @@
 - name: ipxe_selinux_context
   command: restorecon -Rv /var/lib/tftpboot/
   register: reg_selinux_ipxe
-  changed_when: reg_selinux_ipxe.rc != 0
+  changed_when: reg_selinux_ipxe.rc != 0 or reg_selinux_ipxe.stdout_lines != ""
 
 - name: copy_pxe_bootscript
   copy: src=boot.py dest=/var/www/cgi-bin/boot.py owner=apache group=apache mode="0550"
@@ -76,7 +76,7 @@
 - name: apache_selinux_context
   command: restorecon -Rv /var/www/provision/
   register: reg_selinux_apache
-  changed_when: reg_selinux_apache.rc != 0
+  changed_when: reg_selinux_apache.rc != 0 or reg_selinux_apache.stdout_lines != ""
 
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
