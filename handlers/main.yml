@@ -1,4 +1,4 @@
 ---
-- name: restart dhcpd
+- name: restart dhcpd-kickstart
   service: name=dhcpd state=restarted
   when: dhcp_kickstart_handle_dhcpd

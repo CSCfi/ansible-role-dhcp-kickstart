@@ -33,13 +33,14 @@
   template: src=dhcp_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes.conf"
   when: groups[dhcp_group] is defined
   notify:
-    - restart dhcpd
+    - restart dhcpd-kickstart
 
 - name: create_dhcp_ipxe_configs
   template: src=dhcp_pxe_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_pxe_nodes.conf"
   when: groups[dhcp_pxe_group] is defined
+  tags: dhcp_kickstart_config
   notify:
-    - restart dhcpd
+    - restart dhcpd-kickstart
     
 - name: install restorecon for selinux
   package:
