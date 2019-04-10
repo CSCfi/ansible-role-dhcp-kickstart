@@ -1,6 +1,3 @@
-# https://github.com/CSC-IT-Center-for-Science/fgci-ansible/blob/master/examples/hosts-example
-localhost
-
 [login]
 localhost
 
@@ -20,7 +17,7 @@ localhost6
 [compute3]
 localhost6
 
-[dhcp_pxe_hosts]
+[dhcp_pxe_hosts:children]
 pxe_bootable_nodes
 slurm_compute
 
