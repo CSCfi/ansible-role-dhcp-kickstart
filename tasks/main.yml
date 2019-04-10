@@ -14,6 +14,9 @@
 - name: configure_tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
 
+- name: start and enable xinetd on boot
+  service: name='xinetd' state=started enabled=yes
+
 - name: copy_ipxe_chainboot
   copy: src=undionly.kkpxe dest=/var/lib/tftpboot/undionly.kkpxe owner=root group=root mode="0644"
 
