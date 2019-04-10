@@ -1,21 +1,25 @@
 [login]
-localhost
+loginnode
 
 [admin]
-localhost
+adminnode
 
 [grid]
-localhost
+gridnode1
+gridnode2
 
 [install]
-localhost
+installnode
 
 [compute1]
-localhost6
+computenode1
+computenode11
 [compute2]
-localhost6
+computenode2
+computenode22
 [compute3]
-localhost6
+computenode3
+computenode33
 
 [dhcp_pxe_hosts:children]
 pxe_bootable_nodes
