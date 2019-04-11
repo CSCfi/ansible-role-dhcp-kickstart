@@ -32,6 +32,7 @@
 - name: create_dhcp_config
   template: src=dhcp_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes.conf"
   when: groups[dhcp_group] is defined
+  tags: dhcp_config
   notify:
     - restart dhcpd-kickstart
 
@@ -80,11 +81,13 @@
 
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
+  tags: dhcp_kickstart_config
   with_items: "{{ groups[dhcp_pxe_group] }}"
   when: groups[dhcp_pxe_group] is defined
 
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
+  tags: dhcp_kickstart_config
   with_items: "{{ groups }}"
   when:
     - groups[item][0] is defined
