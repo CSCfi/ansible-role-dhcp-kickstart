@@ -1,0 +1,3 @@
+ip_address: '127.0.0.2'
+mac_address: "00:00:00:00:aa:c2"
+os_disks: 'sdb'

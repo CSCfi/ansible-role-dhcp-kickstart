@@ -1,0 +1,24 @@
+---
+ip_address: "127.111.111.111"
+mac_address: "aa:aa:aa:ff:ff:ff"
+dhcp_server_ip: "10.0.0.1"
+dhcp_common_domain: "mylocaldomain.int.example.org"
+kickstart_url: "http:///{{ dhcp_server_ip }}/myks.ks"
+kernel_url_path: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64//isolinux"
+
+install_repo: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64/"
+additional_repos:
+ - name: "CentOS_Updates"
+   url: "http://{{ dhcp_server_ip }}centos.org/7/updates/x86_64/"
+root_password_hash: "$1lolhash"
+kickstart_partitions:
+ - "part /boot --fstype ext4 --size=512 --ondisk=sda"
+ - "part pv.os --size=1 --grow --ondisk=sda"
+ - "volgroup vg.os pv.os"
+ - "logvol / --fstype=ext4 --name=root --vgname=vg.os --size=30720 --grow"
+ - "logvol swap --name=swap --vgname=vg.os --size=10240"
+ - "logvol /var --fstype=ext4 --name=var --vgname=vg.os --size=30720 --grow"
+ - "logvol /tmp --fstype=ext4 --name=tmp --vgname=vg.os --size=10240"
+root_keys:
+ - "ssh-rsa key"
+...

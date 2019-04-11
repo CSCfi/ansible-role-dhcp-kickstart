@@ -2,5 +2,12 @@
 
  - hosts: install,compute
    remote_user: root
+   vars:
+     - dhcp_kickstart_handle_dhcpd: False
+   pre_tasks:
+     - name: install dhcpd
+       package:
+         name: dhcp
+         state: installed
    roles:
      - ansible-role-dhcp-kickstart

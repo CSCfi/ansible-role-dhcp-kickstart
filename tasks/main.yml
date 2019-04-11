@@ -14,6 +14,9 @@
 - name: configure_tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
 
+- name: start and enable xinetd on boot
+  service: name='xinetd' state=started enabled=yes
+
 - name: copy_ipxe_chainboot
   copy: src=undionly.kkpxe dest=/var/lib/tftpboot/undionly.kkpxe owner=root group=root mode="0644"
 
@@ -29,14 +32,16 @@
 - name: create_dhcp_config
   template: src=dhcp_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes.conf"
   when: groups[dhcp_group] is defined
+  tags: dhcp_config
   notify:
-    - restart dhcpd
+    - restart dhcpd-kickstart
 
 - name: create_dhcp_ipxe_configs
   template: src=dhcp_pxe_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_pxe_nodes.conf"
   when: groups[dhcp_pxe_group] is defined
+  tags: dhcp_kickstart_config
   notify:
-    - restart dhcpd
+    - restart dhcpd-kickstart
     
 - name: install restorecon for selinux
   package:
@@ -45,6 +50,8 @@
 
 - name: ipxe_selinux_context
   command: restorecon -Rv /var/lib/tftpboot/
+  register: reg_selinux_ipxe
+  changed_when: reg_selinux_ipxe.rc != 0 or reg_selinux_ipxe.stdout != ""
 
 - name: copy_pxe_bootscript
   copy: src=boot.py dest=/var/www/cgi-bin/boot.py owner=apache group=apache mode="0550"
@@ -69,14 +76,18 @@
 
 - name: apache_selinux_context
   command: restorecon -Rv /var/www/provision/
+  register: reg_selinux_apache
+  changed_when: reg_selinux_apache.rc != 0 or reg_selinux_apache.stdout != ""
 
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
+  tags: dhcp_kickstart_config
   with_items: "{{ groups[dhcp_pxe_group] }}"
   when: groups[dhcp_pxe_group] is defined
 
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
+  tags: dhcp_kickstart_config
   with_items: "{{ groups }}"
   when:
     - groups[item][0] is defined

@@ -1,32 +1,43 @@
-# https://github.com/CSC-IT-Center-for-Science/fgci-ansible/blob/master/examples/hosts-example
-localhost
-
 [login]
-localhost
+loginnode
 
 [admin]
-localhost
+adminnode
 
 [grid]
-localhost
+gridnode1
+gridnode2
 
 [install]
-localhost
+installnode
 
-[compute]
-localhost
+[compute1]
+computenode1
+computenode11
+[compute2]
+computenode2
+computenode22
+[compute3]
+computenode3
+computenode33
+
+[dhcp_pxe_hosts:children]
+pxe_bootable_nodes
+slurm_compute
 
 [pxe_bootable_nodes:children]
-compute
+production
 
 [production:children]
 install
 admin
-#login
+login
 grid
 
 [slurm_service:children]
 install
 
 [slurm_compute:children]
-compute
+compute1
+compute2
+compute3
