@@ -90,6 +90,7 @@
   tags: dhcp_kickstart_config
   with_items: "{{ groups|sort }}"
   when:
+    - item not in dhcp_kickstart_skip_these_groups
     - groups[item][0] is defined
     - hostvars[groups[item][0]]['os_disks'] is defined
 
