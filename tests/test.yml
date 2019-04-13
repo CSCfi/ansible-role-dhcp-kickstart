@@ -4,6 +4,13 @@
    remote_user: root
    vars:
      - dhcp_kickstart_handle_dhcpd: False
+     - dhcp_kickstart_skip_these_groups:
+        - "{{ dhcp_pxe_group }}"
+        - "all"
+        - "production"
+        - "pxe_bootable_nodes"
+        - "slurm_compute"
+        - "slurm_service"
    pre_tasks:
      - name: install dhcpd
        package:
