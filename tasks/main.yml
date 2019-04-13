@@ -82,13 +82,13 @@
 - name: create_pxe_boot_data
   template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
   tags: dhcp_kickstart_config
-  with_items: "{{ groups[dhcp_pxe_group] }}"
+  with_items: "{{ groups[dhcp_pxe_group]|sort }}"
   when: groups[dhcp_pxe_group] is defined
 
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
   tags: dhcp_kickstart_config
-  with_items: "{{ groups }}"
+  with_items: "{{ groups|sort }}"
   when:
     - groups[item][0] is defined
     - hostvars[groups[item][0]]['os_disks'] is defined
