@@ -81,6 +81,7 @@
 
 - name: template pxe boot data json file
   template: src='pxe_nodes.json.j2' dest='/var/www/provision/nodes/pxe_nodes.json'
+  tags: pxe_data
 
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
