@@ -22,13 +22,13 @@ def pxe_abort():
     print("exit")
     sys.exit(0)
 
-
 syslog.openlog("boot.py")
 syslog.setlogmask(syslog.LOG_UPTO(syslog.LOG_INFO))
 
-# from the name, e.g. c1-3.cloud.example.org take c1-3
+# from the name, e.g. c1-3.cloud.example.org take c1-3 and put it in HOSTNAME
 try:
-    HOSTNAME = socket.gethostbyaddr(os.environ["REMOTE_ADDR"])[0].split(".")[0]
+    FQDN = socket.gethostbyaddr(os.environ["REMOTE_ADDR"])[0]
+    HOSTNAME = FQDN.split(".")[0]
 except Exception as e:
     syslog.syslog(
         syslog.LOG_ERR,
@@ -36,18 +36,21 @@ except Exception as e:
     )
     pxe_abort()
 
-syslog.syslog(syslog.LOG_DEBUG, "Got boot iPXE request from " + HOSTNAME)
+syslog.syslog(syslog.LOG_DEBUG, "Got boot iPXE request from " + HOSTNAME + "(" + FQDN + ")")
 
 ####### Memtest
 STARTED = False
 # When a hypervisor restarts without a reinstall/memtest it is expected that the tries fails.
 try:
+    # for convenience create a file called HOSTNAME == short hostname
     os.stat("/var/www/provision/memtest86/" + HOSTNAME)
     os.remove("/var/www/provision/memtest86/" + HOSTNAME)
 
+    # pxe_nodes.json has whatever is in the ansible inventory which might be the
+    #  inconveniently long FQDN
     with open("/var/www/provision/nodes/pxe_nodes.json") as f:
         j = json.load(f)
-    NODESETTINGS = j[HOSTNAME]
+    NODESETTINGS = j[FQDN]
 
     syslog.syslog(syslog.LOG_INFO, "Memtesting node " + HOSTNAME)
     NODESETTINGS = {}
@@ -85,11 +88,14 @@ if STARTED == False:
 
         with open("/var/www/provision/nodes/pxe_nodes.json") as f:
             j = json.load(f)
-        NODESETTINGS = j[HOSTNAME]
+        NODESETTINGS = j[FQDN]
 
-        SERIALPORT = "ttyS0"
-        if "SERIALPORT" in NODESETTINGS:
-            SERIALPORT = NODESETTINGS["SERIALPORT"]
+        SERIALPORT = "ttyS1"
+        EXTRA_KERNEL_PARAMS = ""
+        if "serialport" in NODESETTINGS:
+            SERIALPORT = NODESETTINGS["serialport"]
+        if "extra_kernel_params" in NODESETTINGS:
+            EXTRA_KERNEL_PARAMS = NODESETTINGS["extra_kernel_params"]
 
         syslog.syslog(syslog.LOG_INFO, "Reinstalling node " + HOSTNAME)
         print(PXE_HEADER)
@@ -101,7 +107,7 @@ if STARTED == False:
             + " edd=off ksdevice=bootif kssendmac console="
             + SERIALPORT
             + ",115200 console=tty0 initrd=initrd.img "
-            + NODESETTINGS["extra_kernel_params"]
+            + EXTRA_KERNEL_PARAMS
         )
         print("initrd " + NODESETTINGS["kernel_url_path"] + "/initrd.img")
         print("boot")
