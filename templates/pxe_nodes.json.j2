@@ -1,0 +1,15 @@
+{
+{% for item in dhcp_pxe_group %}
+  "{{ item }}": {
+    "kickstart_profile": "{{ hostvars[item]['kickstart_profile'] }}",
+    "kickstart_server_ip": "{{ hostvars[item]['kickstart_server_ip'] }}"
+{% if 'extra_kernel_params' in hostvars[item] %}
+    "extra_kernel_params": "{{ hostvars[item]['extra_kernel_params'] }}",
+{% endif %}
+{% if 'memtest86_0_path' in hostvars[item] %}
+    "memtest86_0_path": "{{ hostvars[item]['memtest86_0_path'] }}"
+  }{% endif %}{% if not loop.last %},
+{% endif %}
+{% endfor %}
+
+}
