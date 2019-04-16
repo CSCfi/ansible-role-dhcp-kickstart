@@ -1,5 +1,5 @@
 {
-{% for item in hosts_file_pxe_group_to_populate %}
+{% for item in hosts_file_pxe_group_to_populate|sort %}
   "{{ item }}": {
     "kickstart_url": "{{ hostvars[item]['kickstart_url'] }}",
 {% if 'extra_kernel_params' in hostvars[item] %}
