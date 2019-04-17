@@ -1,0 +1,16 @@
+{
+{% for item in hosts_file_pxe_group_to_populate|sort %}
+  "{{ item }}": {
+    "kickstart_url": "{{ hostvars[item]['kickstart_url'] }}",
+{% if 'extra_kernel_params' in hostvars[item] %}
+    "extra_kernel_params": "{{ hostvars[item]['extra_kernel_params'] }}",
+{% endif %}
+{% if 'memtest86_0_path' in hostvars[item] %}
+    "memtest86_0_path": "{{ hostvars[item]['memtest86_0_path'] }}",
+{% endif %}
+    "kernel_url_path": "{{ hostvars[item]['kernel_url_path'] }}"
+  }{% if not loop.last %},
+{% endif %}
+{% endfor %}
+
+}

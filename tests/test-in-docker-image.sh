@@ -125,7 +125,14 @@ function test_playbook(){
 }
 function extra_tests(){
 
-    ${APACHE_CTL} configtest || (echo "php --version was failed" && exit 100 )
+    echo "TEST: cat pxe_nodes.json"
+    cat /var/www/provision/nodes/pxe_nodes.json
+    echo "TEST: valid JSON: python json.loads(pxe_nodes.json)"
+    python tests/test_json.py
+    echo "TEST: curl http://localhost/cgi-bin/boot.py"
+    curl http://localhost/cgi-bin/boot.py
+    echo "TEST: curl http://localhost/cgi-bin/boot.py and grep for pxe"
+    curl -s http://localhost/cgi-bin/boot.py|grep pxe
 }
 
 
@@ -140,7 +147,7 @@ function main(){
     test_playbook_syntax
     test_playbook
 #    test_playbook_check
-#    extra_tests
+    extra_tests
 
 }
 

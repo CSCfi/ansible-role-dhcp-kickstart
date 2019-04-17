@@ -65,6 +65,16 @@ Mandatory:
 Optional:
  - kernel_numa_param(can be set to off)
 
+Touch a file to start a reinstall
+----------------------
+
+If the hostname of a node you want to PXE / kickstart is computenode1.cloud.example.org then you need to touch either
+
+ - /var/www/provision/memtest86/computenode1
+ - or /var/www/provision/reinstall/computenode1
+
+Then when the node boots it will fetch http://ip/cgi-bin/boot.py and that python script will check if that the short hostname of the reverse DNS lookup of the IP/REMOTE_ADDR fetching the file exists and if so return ipxe lines for for example memtest86 or a kickstart reinstall.
+
 
 Caveats
 -------
@@ -79,3 +89,8 @@ dhcp_kickstart_install_chrony: True
 </pre>
 
 to keep chrony.
+
+Other OS than RHEL
+----------
+
+https://github.com/CSCfi/ansible-role-dhcp-kickstart/tree/SoneraCloud_PR_rebase is a PR which has some support for SUSE. It would need quite a bit of work to make it fit with current setup.

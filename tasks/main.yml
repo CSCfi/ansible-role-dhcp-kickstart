@@ -79,11 +79,9 @@
   register: reg_selinux_apache
   changed_when: reg_selinux_apache.rc != 0 or reg_selinux_apache.stdout != ""
 
-- name: create_pxe_boot_data
-  template: src=pxe_node.conf dest="/var/www/provision/nodes/{{ item | regex_replace('^([^\.]*).*$', '\\1')  }}.conf"
-  tags: dhcp_kickstart_config
-  with_items: "{{ groups[dhcp_pxe_group]|sort }}"
-  when: groups[dhcp_pxe_group] is defined
+- name: template pxe boot data json file
+  template: src='pxe_nodes.json.j2' dest='/var/www/provision/nodes/pxe_nodes.json'
+  tags: pxe_data
 
 - name: create_kickstart_group_files
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
