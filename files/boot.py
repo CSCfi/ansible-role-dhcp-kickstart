@@ -29,10 +29,10 @@ syslog.setlogmask(syslog.LOG_UPTO(syslog.LOG_INFO))
 try:
     FQDN = socket.gethostbyaddr(os.environ["REMOTE_ADDR"])[0]
     HOSTNAME = FQDN.split(".")[0]
-except Exception as e:
+except Exception as e_xcep:
     syslog.syslog(
         syslog.LOG_ERR,
-        str(e) + " HOSTNAME wasn't found in /var/www/provision/nodes/pxe_nodes.json",
+        str(e_xcep) + " HOSTNAME wasn't found in /var/www/provision/nodes/pxe_nodes.json",
     )
     pxe_abort()
 
@@ -68,11 +68,11 @@ except OSError:
 # Catch all other problems
 except Exception as exc:
     # print(str(exc))
-    syslog.syslog(syslog.LOG_ERR, str(exc))
+    syslog.syslog(syslog.LOG_ERR, "Error: " + str(exc))
 
 ######## Reinstall
 
-if STARTED == False:
+if not STARTED:
     try:
         os.stat("/var/www/provision/reinstall/" + HOSTNAME)
         os.remove("/var/www/provision/reinstall/" + HOSTNAME)
@@ -109,6 +109,6 @@ if STARTED == False:
     # Catch all other problems
     except Exception as exc:
         print(str(exc))
-        syslog.syslog(syslog.LOG_ERR, str(exc))
+	syslog.syslog(syslog.LOG_ERR, "Error for " + HOSTNAME + ": " + str(exc))
 
 syslog.closelog()
