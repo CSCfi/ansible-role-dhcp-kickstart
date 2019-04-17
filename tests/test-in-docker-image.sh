@@ -129,6 +129,10 @@ function extra_tests(){
     cat /var/www/provision/nodes/pxe_nodes.json
     echo "TEST: valid JSON: python json.loads(pxe_nodes.json)"
     python tests/test_json.py
+    echo "TEST: curl http://localhost/cgi-bin/boot.py"
+    curl http://localhost/cgi-bin/boot.py
+    echo "TEST: curl http://localhost/cgi-bin/boot.py and grep for pxe"
+    curl -s http://localhost/cgi-bin/boot.py|grep pxe
 }
 
 
