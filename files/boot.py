@@ -53,16 +53,7 @@ try:
     NODESETTINGS = j[FQDN]
 
     syslog.syslog(syslog.LOG_INFO, "Memtesting node " + HOSTNAME)
-    NODESETTINGS = {}
-    for line in f.readlines():
-        # for every line, e.g. "key=value", set NODESETTINGS["key"]="value"
-        # comment lines will throw an error, skip them
-        try:
-            NODESETTINGS[line.split("=")[0]] = line.split("=", 1)[1].strip()
-        except:
-            pass
 
-    f.close()
     # http://forum.ipxe.org/showthread.php?tid=7937&highlight=memtest
     # https://git.ipxe.org/people/mcb30/memtest.git/commitdiff/fac651cb5f52f4dc2435c5c11ada06215a5b9ec9
     # there is no "pxe" referenced in memtest86+ 7.5 source code (found inside the iso)
