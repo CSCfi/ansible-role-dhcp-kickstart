@@ -42,11 +42,12 @@ syslog.syslog(syslog.LOG_DEBUG, "Got boot iPXE request from " + HOSTNAME + "(" +
 STARTED = False
 # When a hypervisor restarts without a reinstall/memtest it is expected that the tries fails.
 try:
-    # for convenience create a file called HOSTNAME == short hostname
+    # for convenience admins on the web server that houses boot.py
+    #  needs to create a file called HOSTNAME == short hostname and not FQDN
     os.stat("/var/www/provision/memtest86/" + HOSTNAME)
     os.remove("/var/www/provision/memtest86/" + HOSTNAME)
 
-    # pxe_nodes.json has whatever is in the ansible inventory which might be the
+    #  pxe_nodes.json however has whatever is in the ansible inventory which might be the
     #  inconveniently long FQDN
     with open("/var/www/provision/nodes/pxe_nodes.json") as f:
         j = json.load(f)
@@ -109,6 +110,6 @@ if not STARTED:
     # Catch all other problems
     except Exception as exc:
         print(str(exc))
-	syslog.syslog(syslog.LOG_ERR, "Error for " + HOSTNAME + ": " + str(exc))
+        syslog.syslog(syslog.LOG_ERR, "Error for " + HOSTNAME + ": " + str(exc))
 
 syslog.closelog()
