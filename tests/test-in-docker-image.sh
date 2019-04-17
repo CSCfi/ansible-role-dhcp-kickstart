@@ -127,6 +127,8 @@ function extra_tests(){
 
     echo "TEST: cat pxe_nodes.json"
     cat /var/www/provision/nodes/pxe_nodes.json
+    echo "TEST: valid JSON: python json.loads(pxe_nodes.json)"
+    python tests/test_json.py
 }
 
 
