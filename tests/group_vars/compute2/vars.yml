@@ -1,3 +1,4 @@
 ip_address: '127.0.0.2'
 mac_address: "00:00:00:00:aa:c2"
 os_disks: 'sdb'
+memtest86_0_path: "http://10.1.1.1/memtest.0"
