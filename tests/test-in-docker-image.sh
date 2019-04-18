@@ -137,10 +137,14 @@ function extra_tests(){
     cat /var/www/provision/nodes/pxe_nodes.json
     echo "TEST: valid JSON: python json.loads(pxe_nodes.json)"
     python tests/test_json.py
-    echo "TEST: curl http://localhost/cgi-bin/boot.py"
-    curl -vv http://localhost/cgi-bin/boot.py
-    echo "TEST: curl http://localhost/cgi-bin/boot.py and grep for pxe"
-    curl -s http://localhost/cgi-bin/boot.py|grep pxe
+    echo "TEST: curl http://${HOSTNAME}/cgi-bin/boot.py"
+    curl -vv http://${HOSTNAME}/cgi-bin/boot.py
+    echo "TEST: curl http://${HOSTNAME}/cgi-bin/boot.py and grep for pxe"
+    curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep pxe
+    echo "TEST: touch /var/www/provision/reinstall/${HOSTNAME}"
+    touch /var/www/provision/reinstall/${HOSTNAME}
+    echo "TEST: curl after touching the reinstall file"
+    curl -s http://${HOSTNAME}/cgi-bin/boot.py
 }
 
 
