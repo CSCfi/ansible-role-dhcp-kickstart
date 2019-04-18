@@ -1,3 +1,4 @@
 ip_address: '127.0.0.3'
 mac_address: "00:00:00:00:aa:c3"
 os_disks: 'sdc'
+kernel_numa_param: "on rhgb quiet"
