@@ -8,6 +8,9 @@
 - name: install_xinetd
   yum: name='xinetd' state='present'
 
+- name: install_pykickstart for ksvalidator
+  yum: name='pykickstart' state='present'
+
 - name: install_tftp-server
   yum: name='tftp-server' state='present'
 
@@ -87,6 +90,7 @@
   template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
   tags: dhcp_kickstart_config
   with_items: "{{ groups|sort }}"
+  validate: '/usr/bin/ksvalidator %s'
   when:
     - item not in dhcp_kickstart_skip_these_groups
     - groups[item][0] is defined
