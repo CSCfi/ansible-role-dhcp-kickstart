@@ -32,9 +32,9 @@ firewall --service=ssh
 skipx
 services --enabled=ntpd
 
-{% if hostvars[groups[item][0]]['central_log_host'] is defined %}
+{% if hostvars[groups[item][0]]['kickstart_log_host'] is defined %}
 # Logging
-logging --host={{ hostvars[groups[item][0]]['central_log_host'] }}
+logging --host={{ hostvars[groups[item][0]]['kickstart_log_host'] }}
 {% endif %}
 
 clearpart --all --drives={{ hostvars[groups[item][0]]['os_disks'] }} --initlabel
