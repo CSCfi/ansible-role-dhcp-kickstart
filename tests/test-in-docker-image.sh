@@ -92,6 +92,14 @@ function test_ansible_setup(){
 
 }
 
+function add_server_to_inventory(){
+
+    echo "TEST: put ${HOSTNAME} into ${ANSIBLE_INVENTORY} ansible group compute3"
+
+    echo ${HOSTNAME} >> ${ANSIBLE_INVENTORY}
+
+}
+
 
 function test_install_requirements(){
     echo "TEST: ansible-galaxy install -r requirements.yml --force"
@@ -130,7 +138,7 @@ function extra_tests(){
     echo "TEST: valid JSON: python json.loads(pxe_nodes.json)"
     python tests/test_json.py
     echo "TEST: curl http://localhost/cgi-bin/boot.py"
-    curl http://localhost/cgi-bin/boot.py
+    curl -vv http://localhost/cgi-bin/boot.py
     echo "TEST: curl http://localhost/cgi-bin/boot.py and grep for pxe"
     curl -s http://localhost/cgi-bin/boot.py|grep pxe
 }
@@ -141,6 +149,7 @@ function main(){
 #    install_os_deps
 #    install_ansible_devel
     show_version
+    add_server_to_inventory
 #    tree_list
 #    test_install_requirements
     test_ansible_setup
