@@ -43,7 +43,7 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
-{% if hostvars[groups[item][0]]['dhcp_kickstart_default_packages'] == true %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 %packages
 @ Base
 -NetworkManager
