@@ -148,7 +148,7 @@ function extra_tests(){
     echo "TEST: touch /var/www/provision/memtest86/${HOSTNAME}"
     touch /var/www/provision/memtest86/${HOSTNAME}
     echo "TEST: curl after touching the memtest86 file and grep for the lines"
-    curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep -e pxe -e ^boot
+    curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep -e pxe -e ^boot -e ^kernel
 }
 
 
