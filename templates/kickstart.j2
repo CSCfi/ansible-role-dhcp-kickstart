@@ -33,7 +33,6 @@ skipx
 services --enabled=ntpd
 
 {% if hostvars[groups[item][0]]['kickstart_log_host'] is defined %}
-# Logging
 logging --host={{ hostvars[groups[item][0]]['kickstart_log_host'] }}
 {% endif %}
 
