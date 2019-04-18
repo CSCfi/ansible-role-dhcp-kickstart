@@ -11,4 +11,4 @@ kickstart_packages: |
   vim-enhanced
   openssh-clients
 kickstart_grubby_remove_args: "rhgb quiet"
-kickstart_grubby_args: "console=tty0 console=ttyS1,115200 ipv6.disable=1 numa=on
+kickstart_grubby_args: "{{ serialport }} ipv6.disable=1 numa={{ kernel_numa_param }}"

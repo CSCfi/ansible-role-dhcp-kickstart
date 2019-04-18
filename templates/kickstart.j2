@@ -109,10 +109,12 @@ echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
 {{ hostvars[groups[item][0]]['kickstart_extra_post_commands'] }}
 {% endif %}
 
-{% if hostvars[groups[item][0]]['kickstart_grubby_remove_args'] is defined %}
+{% if hostvars[groups[item][0]]['kickstart_grubby_remove_args'] is defined and hostvars[groups[item][0]]['kickstart_grubby_args'] is defined%}
 /sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ hostvars[groups[item][0]]['kickstart_grubby_args'] }}" --remove-args="{{ hostvars[groups[item][0]]['kickstart_grubby_remove_args'] }}"
-{% else %}
+{% elif hostvars[groups[item][0]]['kickstart_grubby_remove_args'] is not defined and hostvars[groups[item][0]]['kickstart_grubby_args'] is defined%}
 /sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ hostvars[groups[item][0]]['kickstart_grubby_args'] }}"
+{% else %}
+/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ kickstart_grubby_args }}"
 {% endif %}
 # End post install kernel options update
 %end
