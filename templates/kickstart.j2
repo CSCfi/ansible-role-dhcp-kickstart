@@ -2,12 +2,13 @@ install
 text
 network --noipv6
 
-# The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
-# Ansible has no way of accessing a group's variables, so they are accessed
-# via the first host of the group.
+{% if yum_proxy is defined %}
+url --url {{ install_repo }} --proxy={{ yum_proxy }}
+{% else %}
+url --url {{ install_repo }}
+{% endif %}
 
-url --url {{ hostvars[groups[item][0]]['install_repo'] }}
-{% for repo in hostvars[groups[item][0]]['additional_repos'] %}
+{% for repo in additional_repos %}
 repo --name={{ repo.name }} --baseurl={{ repo.url }}
 {% endfor %}
 lang en_US.UTF-8
@@ -16,17 +17,17 @@ zerombr
 bootloader --location=mbr --append elevator=deadline
 timezone Europe/Helsinki
 auth --enableshadow --passalgo=sha512
-rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
+rootpw --iscrypted {{ root_password_hash }}
 selinux --disabled
 reboot
 firewall --service=ssh
 skipx
 services --enabled=ntpd
 
-clearpart --all --drives={{ hostvars[groups[item][0]]['os_disks'] }} --initlabel
-ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
+clearpart --all --drives={{ os_disks }} --initlabel
+ignoredisk --only-use={{ os_disks }}
 
-{% for line in hostvars[groups[item][0]]['kickstart_partitions'] %}
+{% for line in kickstart_partitions %}
 {{ line }}
 {% endfor %}
 
@@ -48,7 +49,7 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 
 %post --interpreter /bin/bash --log /root/ks-post.log.1
 mkdir -p /root/.ssh
-{% for key in hostvars[groups[item][0]]['root_keys'] %}
+{% for key in root_keys %}
 echo "{{ key }}" >> /root/.ssh/authorized_keys
 {% endfor %}
 chmod 700 /root/.ssh
@@ -73,6 +74,6 @@ systemctl disable NetworkManager
 echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
 
-/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="console=tty0 console=ttyS1,19200n8 ipv6.disable=1 numa={{ hostvars[groups[item][0]]['kernel_numa_param'] | default('on') }}"
+/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="console=tty0 console=ttyS1,19200n8 ipv6.disable=1 numa={{ kernel_numa_param | default('on') }}"
 # End post install kernel options update
 %end
