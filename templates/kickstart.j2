@@ -58,7 +58,9 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
 {% endif %}
+{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
+{% endif %}
 %end
 
 {% if hostvars[groups[item][0]]['kickstart_pre_option'] is defined %}
