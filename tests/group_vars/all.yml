@@ -21,4 +21,5 @@ kickstart_partitions:
  - "logvol /tmp --fstype=ext4 --name=tmp --vgname=vg.os --size=10240"
 root_keys:
  - "ssh-rsa key"
+ - "ssh-rsa key2"
 ...

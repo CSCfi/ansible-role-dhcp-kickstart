@@ -6,9 +6,18 @@ network --noipv6
 # Ansible has no way of accessing a group's variables, so they are accessed
 # via the first host of the group.
 
+{% if hostvars[groups[item][0]]['yum_proxy'] is defined %}
+url --url {{ hostvars[groups[item][0]]['install_repo'] }} --proxy={{ hostvars[groups[item][0]]['yum_proxy'] }}
+{% else %}
 url --url {{ hostvars[groups[item][0]]['install_repo'] }}
+{% endif %}
+
 {% for repo in hostvars[groups[item][0]]['additional_repos'] %}
+{% if hostvars[groups[item][0]]['yum_proxy'] is defined %}
+repo --name={{ repo.name }} --baseurl={{ repo.url }} --proxy={{ hostvars[groups[item][0]]['yum_proxy'] }}
+{% else %}
 repo --name={{ repo.name }} --baseurl={{ repo.url }}
+{% endif %}
 {% endfor %}
 lang en_US.UTF-8
 keyboard fi-latin1
@@ -22,6 +31,11 @@ reboot
 firewall --service=ssh
 skipx
 services --enabled=ntpd
+
+{% if hostvars[groups[item][0]]['central_log_host'] is defined %}
+# Logging
+logging --host={{ hostvars[groups[item][0]]['central_log_host'] }}
+{% endif %}
 
 clearpart --all --drives={{ hostvars[groups[item][0]]['os_disks'] }} --initlabel
 ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
@@ -44,7 +58,17 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
 {% endif %}
+{{ hostvars[groups[item][0]]['kickstart_packages'] }}
 %end
+
+{% if hostvars[groups[item][0]]['kickstart_pre_option'] is defined %}
+{% if hostvars[groups[item][0]]['kickstart_extra_pre_commands'] is defined %}
+####### Extra PRE commands
+{{ hostvars[groups[item][0]]['kickstart_pre_option'] }}
+{{ hostvars[groups[item][0]]['kickstart_extra_pre_commands'] }}
+%end
+{% endif %}
+{% endif %}
 
 %post --interpreter /bin/bash --log /root/ks-post.log.1
 mkdir -p /root/.ssh
@@ -72,6 +96,11 @@ systemctl disable NetworkManager
 # Disable Ipv6 at the kernel level
 echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+
+{% if hostvars[groups[item][0]]['kickstart_extra_post_commands'] is defined %}
+####### Extra POST commands
+{{ hostvars[groups[item][0]]['kickstart_extra_post_commands'] }}
+{% endif %}
 
 /sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="console=tty0 console=ttyS1,19200n8 ipv6.disable=1 numa={{ hostvars[groups[item][0]]['kernel_numa_param'] | default('on') }}"
 # End post install kernel options update
