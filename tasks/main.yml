@@ -87,10 +87,9 @@
   tags: pxe_data
 
 - name: create_kickstart_group_files
-  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks"
+  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks" validate='/usr/bin/ksvalidator %s'
   tags: dhcp_kickstart_config
   with_items: "{{ groups|sort }}"
-  validate: '/usr/bin/ksvalidator %s'
   when:
     - item not in dhcp_kickstart_skip_these_groups
     - groups[item][0] is defined
