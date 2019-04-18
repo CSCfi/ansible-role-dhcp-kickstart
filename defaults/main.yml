@@ -8,6 +8,6 @@ dhcp_kickstart_handle_dhcpd: True
 dhcp_kickstart_skip_these_groups:
  - "{{ dhcp_pxe_group }}"
  - "all"
-kickstart_grubby_args: "console=tty0 console=ttyS1,19200n8 ipv6.disable=1 numa={{ hostvars[groups[item][0]]['kernel_numa_param'] | default('on') }}"
+kickstart_grubby_args: "console=tty0 console=ttyS1,19200n8 ipv6.disable=1 numa=on"
 #kickstart_grubby_remove_args: ""
 ...
