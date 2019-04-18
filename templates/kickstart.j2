@@ -19,11 +19,11 @@ repo --name={{ repo.name }} --baseurl={{ repo.url }} --proxy={{ hostvars[groups[
 repo --name={{ repo.name }} --baseurl={{ repo.url }}
 {% endif %}
 {% endfor %}
-lang en_US.UTF-8
-keyboard fi-latin1
+lang {{ hostvars[groups[item][0]]['kickstart_lang'] | default('en_US.UTF-8') }}
+keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1') }}
 zerombr
 bootloader --location=mbr --append elevator=deadline
-timezone Europe/Helsinki
+timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
 auth --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
 selinux --disabled
@@ -43,6 +43,7 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
+{% if dhcp_kickstart_default_packages == true %}
 %packages
 @ Base
 -NetworkManager
@@ -58,6 +59,10 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 -chrony
 {% endif %}
 {% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
+{{ hostvars[groups[item][0]]['kickstart_packages'] }}
+{% endif %}
+{% else %}
+%packages
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
 {% endif %}
 %end
