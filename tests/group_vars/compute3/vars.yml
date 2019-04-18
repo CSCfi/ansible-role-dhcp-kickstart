@@ -2,10 +2,12 @@ ip_address: '127.0.0.3'
 mac_address: "00:00:00:00:aa:c3"
 memtest86_0_path: "http://10.1.1.1/memtest.0"
 os_disks: 'sdc'
-kernel_numa_param: "on rhgb quiet"
+kernel_numa_param: "off"
 dhcp_kickstart_manage_packages: "anything"
 kickstart_packages: |
   %packages --nobase
   @core
   vim-enhanced
   openssh-clients
+kickstart_grubby_remove_args: "rhgb quiet"
+kickstart_grubby_args: "console=tty0 console=ttyS1,115200 ipv6.disable=1 numa={{ hostvars[groups[item][0]]['kernel_numa_param'] | default('on') }}"
