@@ -39,6 +39,7 @@ Mandatory:
  - kernel_url_path (path where kickstart kernel and initrd can be found)
 
 Optional:
+ - serialport (for kickstart)
  - extra_kernel_params (for the kickstart)
  - dhcp_domain
  - memtest86_0_path (for pointing to a memtest.0 PXE NBP)

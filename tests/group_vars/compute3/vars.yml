@@ -2,6 +2,7 @@ ip_address: '127.0.0.3'
 mac_address: "00:00:00:00:aa:c3"
 memtest86_0_path: "http://10.1.1.1/memtest.0"
 os_disks: 'sdc'
+serialport: "console=ttyS1,115200"
 kernel_numa_param: "off"
 dhcp_kickstart_manage_packages: "anything"
 kickstart_packages: |

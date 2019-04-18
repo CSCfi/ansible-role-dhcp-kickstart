@@ -82,7 +82,8 @@ if not STARTED:
             j = json.load(f)
         NODESETTINGS = j[FQDN]
 
-        SERIALPORT = "ttyS1"
+        # default sets up both serial and console
+        SERIALPORT = "console=ttyS1,115200 console=tty0"
         EXTRA_KERNEL_PARAMS = ""
         if "serialport" in NODESETTINGS:
             SERIALPORT = NODESETTINGS["serialport"]
@@ -96,9 +97,9 @@ if not STARTED:
             + NODESETTINGS["kernel_url_path"]
             + "/vmlinuz ks="
             + NODESETTINGS["kickstart_url"]
-            + " edd=off ksdevice=bootif kssendmac console="
+            + " edd=off ksdevice=bootif kssendmac "
             + SERIALPORT
-            + ",115200 console=tty0 initrd=initrd.img "
+            + "initrd=initrd.img "
             + EXTRA_KERNEL_PARAMS
         )
         print("initrd " + NODESETTINGS["kernel_url_path"] + "/initrd.img")
