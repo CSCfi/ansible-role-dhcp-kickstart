@@ -63,7 +63,9 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% endif %}
 {% else %}
 %packages
+{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
+{% endif %}
 {% endif %}
 %end
 
