@@ -149,6 +149,10 @@ function extra_tests(){
     touch /var/www/provision/memtest86/${HOSTNAME}
     echo "TEST: curl after touching the memtest86 file and grep for the lines"
     curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep -e pxe -e ^boot -e ^kernel
+    echo "TEST: grep for sdc in compute3's kickstart file because that's what we have in tests/group_vars/compute3/ ."
+    echo " If this fails there has been a backwards compatible breaking change"
+    grep sdc /var/www/html/kickstart/compute3.ks
+
 }
 
 
