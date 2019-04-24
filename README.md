@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/CSCfi/ansible-role-dhcp-kickstart.svg?branch=master)](https://travis-ci.org/CSCfi/ansible-role-dhcp-kickstart)
 
-Spacewalk proxy  Ansible role
+DHCP/PXE privisioning Ansible role
 =============================
 
 This is an Ansible role for configuring PXE/iPXE provisioning, either by
@@ -39,10 +39,22 @@ Mandatory:
  - kernel_url_path (path where kickstart kernel and initrd can be found)
 
 Optional:
- - serialport (for kickstart)
- - extra_kernel_params (for the kickstart)
+ - serialport (for during kickstart)
+ - extra_kernel_params (for during kickstart)
  - dhcp_domain
  - memtest86_0_path (for pointing to a memtest.0 PXE NBP)
+ - kickstart_grubby_remove_args (for adjusting grub config on default kernel at the end of the kickstart)
+ - kickstart_grubby_args
+ - yum_proxy (if defined is used also in the url and repo bits of the kickstart)
+ - kickstart_lang
+ - kickstart_keyboard
+ - kickstart_timezone
+ - kickstart_log_host
+ - dhcp_kickstart_manage_packages
+ - kickstart_packages
+ - kickstart_extra_pre_option
+ - kickstart_extra_pre_commands
+ - kickstart_extra_post_commands
 
 The nodes which only need to be set up for DHCP need to be in the
 (by default) "dhcp_only_nodes"  group. These nodes need the following 
