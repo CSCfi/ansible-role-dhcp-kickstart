@@ -25,9 +25,11 @@ This role assumes that a ISC DHCP server has been set up by another role.
 Usage
 -----
 
-This role works by setting up pxe booting based on groups. It configures PXE
+This role works by setting up pxe booting based on **groups**. It configures PXE
 booting for all hosts in the desired group. By default it's "dhcp_pxe_nodes",
 but it can be defined (check defaults/main.yml)
+
+It sets up kickstarts for every ansible **group** under dhcp_pxe_nodes (more details in the Caveats section)
 
 Each host needs the follwing variables in its scope.
 
@@ -102,6 +104,22 @@ dhcp_kickstart_install_chrony: True
 </pre>
 
 to keep chrony.
+
+Why we use hostvars[groups[item][0]]['variablename'] when templating in the kickstarts
+-----
+
+This role sets up kickstarts for every ansible **group** under dhcp_pxe_nodes.
+
+This last bit makes this role a bit different than many other ansible roles.
+
+Templating in the kickstart config files are done per group and not per host.
+
+This is why we use the weird hostvars[groups[item][0]]['variable']
+
+If one were to use the {{ variablename }} and you use ansible groups with parents of parents (grand parents? :)
+then the variable that ends up in the final file might vary depending on which parent group gets put earlier
+in the ansible python unordered list. If you can make this role work without using hostvars I'll buy you a beer.
+
 
 Other OS than RHEL
 ----------
