@@ -53,7 +53,7 @@ Optional:
  - kickstart_timezone
  - kickstart_log_host
  - dhcp_kickstart_manage_packages
- - kickstart_packages
+ - kickstart_packages # if dhcp_kickstart_manage_packages is defined then kickstart_packages must contain %packages
  - kickstart_extra_pre_option
  - kickstart_extra_pre_commands
  - kickstart_extra_post_commands
