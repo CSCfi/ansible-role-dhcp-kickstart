@@ -9,7 +9,7 @@ kernel_url_path: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64//isolinux"
 install_repo: "http://{{ dhcp_server_ip }}/centos.org/7/os/x86_64/"
 additional_repos:
  - name: "CentOS_Updates"
-   url: "http://{{ dhcp_server_ip }}centos.org/7/updates/x86_64/"
+   url: "http://{{ dhcp_server_ip }}/centos.org/7/updates/x86_64/"
 root_password_hash: "$1lolhash"
 kickstart_partitions:
  - "part /boot --fstype ext4 --size=512 --ondisk=sda"
@@ -21,4 +21,5 @@ kickstart_partitions:
  - "logvol /tmp --fstype=ext4 --name=tmp --vgname=vg.os --size=10240"
 root_keys:
  - "ssh-rsa key"
+ - "ssh-rsa key2"
 ...

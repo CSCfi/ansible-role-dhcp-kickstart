@@ -92,6 +92,14 @@ function test_ansible_setup(){
 
 }
 
+function add_server_to_inventory(){
+
+    echo "TEST: put ${HOSTNAME} into ${ANSIBLE_INVENTORY} ansible group compute3"
+
+    echo ${HOSTNAME} >> ${ANSIBLE_INVENTORY}
+
+}
+
 
 function test_install_requirements(){
     echo "TEST: ansible-galaxy install -r requirements.yml --force"
@@ -129,10 +137,22 @@ function extra_tests(){
     cat /var/www/provision/nodes/pxe_nodes.json
     echo "TEST: valid JSON: python json.loads(pxe_nodes.json)"
     python tests/test_json.py
-    echo "TEST: curl http://localhost/cgi-bin/boot.py"
-    curl http://localhost/cgi-bin/boot.py
-    echo "TEST: curl http://localhost/cgi-bin/boot.py and grep for pxe"
-    curl -s http://localhost/cgi-bin/boot.py|grep pxe
+    echo "TEST: curl http://${HOSTNAME}/cgi-bin/boot.py"
+    curl -vv http://${HOSTNAME}/cgi-bin/boot.py
+    echo "TEST: curl http://${HOSTNAME}/cgi-bin/boot.py and grep for pxe"
+    curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep pxe
+    echo "TEST: touch /var/www/provision/reinstall/${HOSTNAME}"
+    touch /var/www/provision/reinstall/${HOSTNAME}
+    echo "TEST: curl after touching the reinstall file and grep for the lines"
+    curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep -e pxe -e ^kernel -e ^init -e ^boot
+    echo "TEST: touch /var/www/provision/memtest86/${HOSTNAME}"
+    touch /var/www/provision/memtest86/${HOSTNAME}
+    echo "TEST: curl after touching the memtest86 file and grep for the lines"
+    curl -s http://${HOSTNAME}/cgi-bin/boot.py|grep -e pxe -e ^boot -e ^kernel
+    echo "TEST: grep for sdc in compute3's kickstart file because that's what we have in tests/group_vars/compute3/ ."
+    echo " If this fails there has been a backwards compatible breaking change"
+    grep sdc /var/www/html/kickstart/compute3.ks
+
 }
 
 
@@ -141,6 +161,7 @@ function main(){
 #    install_os_deps
 #    install_ansible_devel
     show_version
+    add_server_to_inventory
 #    tree_list
 #    test_install_requirements
     test_ansible_setup

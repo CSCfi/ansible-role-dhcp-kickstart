@@ -1,3 +1,16 @@
 os_disks: 'sde'
 ip_address: '127.0.0.1'
 mac_address: "00:00:00:00:aa:aa"
+kickstart_packages: |
+  ansible
+  git
+yum_proxy: "http://myproxy.example.org:3128"
+
+kickstart_pre_option: "%pre --interpreter=/usr/bin/python --log=/mnt/sysimage/root/ks-pre.log"
+kickstart_extra_pre_commands: |
+ 'print("no extra kickstart pre commands defined")'
+
+kickstart_extra_post_commands: |
+ "echo no extra kickstart post commands defined"
+
+kickstart_log_host: "10.2.2.2"

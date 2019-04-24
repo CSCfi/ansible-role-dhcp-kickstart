@@ -17,9 +17,6 @@ computenode11
 [compute2]
 computenode2
 computenode22
-[compute3]
-computenode3
-computenode33
 
 [dhcp_pxe_hosts:children]
 pxe_bootable_nodes
@@ -41,3 +38,9 @@ install
 compute1
 compute2
 compute3
+
+# compute3 group at bottom so as part of testing we can
+#  echo $HOSTNAME >> inventory
+[compute3]
+computenode3
+computenode33

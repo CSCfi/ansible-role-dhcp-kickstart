@@ -8,6 +8,9 @@
 {% if 'memtest86_0_path' in hostvars[item] %}
     "memtest86_0_path": "{{ hostvars[item]['memtest86_0_path'] }}",
 {% endif %}
+{% if 'serialport' in hostvars[item] %}
+    "serialport": "{{ hostvars[item]['serialport'] }}",
+{% endif %}
     "kernel_url_path": "{{ hostvars[item]['kernel_url_path'] }}"
   }{% if not loop.last %},
 {% endif %}

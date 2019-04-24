@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/CSCfi/ansible-role-dhcp-kickstart.svg?branch=master)](https://travis-ci.org/CSCfi/ansible-role-dhcp-kickstart)
 
-Spacewalk proxy  Ansible role
+DHCP/PXE privisioning Ansible role
 =============================
 
 This is an Ansible role for configuring PXE/iPXE provisioning, either by
@@ -25,9 +25,11 @@ This role assumes that a ISC DHCP server has been set up by another role.
 Usage
 -----
 
-This role works by setting up pxe booting based on groups. It configures PXE
+This role works by setting up pxe booting based on **groups**. It configures PXE
 booting for all hosts in the desired group. By default it's "dhcp_pxe_nodes",
 but it can be defined (check defaults/main.yml)
+
+It sets up kickstarts for every ansible **group** under dhcp_pxe_nodes (more details in the Caveats section)
 
 Each host needs the follwing variables in its scope.
 
@@ -39,9 +41,22 @@ Mandatory:
  - kernel_url_path (path where kickstart kernel and initrd can be found)
 
 Optional:
- - extra_kernel_params (for the kickstart)
+ - serialport (for during kickstart)
+ - extra_kernel_params (for during kickstart)
  - dhcp_domain
  - memtest86_0_path (for pointing to a memtest.0 PXE NBP)
+ - kickstart_grubby_remove_args (for adjusting grub config on default kernel at the end of the kickstart)
+ - kickstart_grubby_args
+ - yum_proxy (if defined is used also in the url and repo bits of the kickstart)
+ - kickstart_lang
+ - kickstart_keyboard
+ - kickstart_timezone
+ - kickstart_log_host
+ - dhcp_kickstart_manage_packages
+ - kickstart_packages # if dhcp_kickstart_manage_packages is defined then kickstart_packages must contain %packages
+ - kickstart_extra_pre_option
+ - kickstart_extra_pre_commands
+ - kickstart_extra_post_commands
 
 The nodes which only need to be set up for DHCP need to be in the
 (by default) "dhcp_only_nodes"  group. These nodes need the following 
@@ -89,6 +104,22 @@ dhcp_kickstart_install_chrony: True
 </pre>
 
 to keep chrony.
+
+Why we use hostvars[groups[item][0]]['variablename'] when templating in the kickstarts
+-----
+
+This role sets up kickstarts for every ansible **group** under dhcp_pxe_nodes.
+
+This last bit makes this role a bit different than many other ansible roles.
+
+Templating in the kickstart config files are done per group and not per host.
+
+This is why we use the weird hostvars[groups[item][0]]['variable']
+
+If one were to use the {{ variablename }} and you use ansible groups with parents of parents (grand parents? :)
+then the variable that ends up in the final file might vary depending on which parent group gets put earlier
+in the ansible python unordered list. If you can make this role work without using hostvars I'll buy you a beer.
+
 
 Other OS than RHEL
 ----------
