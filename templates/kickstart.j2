@@ -55,26 +55,22 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 -NetworkManager-glib
 -NetworkManager-team
 -NetworkManager-wwan
-{% if dhcp_kickstart_install_chrony == false %}
+  {% if dhcp_kickstart_install_chrony == false -%}
 -chrony
+  {%- endif %}
 {% endif %}
 {% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
-{% endif %}
-{% else %}
-{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
-{{ hostvars[groups[item][0]]['kickstart_packages'] }}
-{% endif %}
 {% endif %}
 %end
 
 {% if hostvars[groups[item][0]]['kickstart_pre_option'] is defined %}
-{% if hostvars[groups[item][0]]['kickstart_extra_pre_commands'] is defined %}
+  {% if hostvars[groups[item][0]]['kickstart_extra_pre_commands'] is defined -%}
 ####### Extra PRE commands
 {{ hostvars[groups[item][0]]['kickstart_pre_option'] }}
 {{ hostvars[groups[item][0]]['kickstart_extra_pre_commands'] }}
 %end
-{% endif %}
+  {%- endif %}
 {% endif %}
 
 %post --interpreter /bin/bash --log /root/ks-post.log.1
