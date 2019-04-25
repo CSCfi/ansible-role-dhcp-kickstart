@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/CSCfi/ansible-role-dhcp-kickstart.svg?branch=master)](https://travis-ci.org/CSCfi/ansible-role-dhcp-kickstart)
 
-DHCP/PXE privisioning Ansible role
+DHCP/PXE provisioning Ansible role
 =============================
 
 This is an Ansible role for configuring PXE/iPXE provisioning, either by
@@ -31,7 +31,7 @@ but it can be defined (check defaults/main.yml)
 
 It sets up kickstarts for every ansible **group** under dhcp_pxe_nodes (more details in the Caveats section)
 
-Each host needs the follwing variables in its scope.
+Each host needs the following variables in its scope.
 
 Mandatory:
  - mac_address
