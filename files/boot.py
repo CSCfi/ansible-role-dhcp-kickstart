@@ -99,7 +99,7 @@ if not STARTED:
             + NODESETTINGS["kickstart_url"]
             + " edd=off ksdevice=bootif kssendmac "
             + SERIALPORT
-            + "initrd=initrd.img "
+            + " initrd=initrd.img "
             + EXTRA_KERNEL_PARAMS
         )
         print("initrd " + NODESETTINGS["kernel_url_path"] + "/initrd.img")
