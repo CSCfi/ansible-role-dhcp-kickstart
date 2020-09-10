@@ -27,7 +27,7 @@
   copy: src=undionly.kpxe dest=/var/lib/tftpboot/undionly.kpxe owner=root group=root mode="0644"
 
 - name: copy_uefi_chainboot
-  copy: src=ipxe-x86.efi dest=/var/lib/tftpboot/ipxe-x86.efi owner=root group=root mode="0644"
+  copy: src=ipxe-x64.efi dest=/var/lib/tftpboot/ipxe-x64.efi owner=root group=root mode="0644"
 
 - name: create_dhcpd_config_dir
   file: path=/etc/dhcp/dhcpd.d state=directory owner=root group=root mode="0755"
