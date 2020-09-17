@@ -43,8 +43,8 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
-{% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 %packages
+{% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 @ Base
 -NetworkManager
 -NetworkManager-bluetooth
@@ -55,9 +55,9 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 -NetworkManager-glib
 -NetworkManager-team
 -NetworkManager-wwan
+{% endif %}
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
-{% endif %}
 {% endif %}
 {% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
