@@ -53,13 +53,20 @@ Optional:
  - kickstart_timezone
  - kickstart_log_host
  - dhcp_kickstart_manage_packages
- - kickstart_packages # if dhcp_kickstart_manage_packages is defined then kickstart_packages must contain %packages
+ - kickstart_packages # if dhcp_kickstart_manage_packages is defined, it must contain at least @Core or @Base
  - kickstart_extra_pre_option
  - kickstart_extra_pre_commands
  - kickstart_extra_post_commands
+ - dhcp_kickstart_centos_version set as "8" or "9" in order to skip old centos7 defaults, remember to define kickstart_packages like:
+    @core --nodefaults
+    -alsa-*
+    -ivtv*
+    -iwl*firmware
+
+ - dhcp_kickstart_disable_ipv6 set as False if ipv6 is needed
 
 The nodes which only need to be set up for DHCP need to be in the
-(by default) "dhcp_only_nodes"  group. These nodes need the following 
+(by default) "dhcp_only_nodes"  group. These nodes need the following
 variables.
 
  - mac_address
