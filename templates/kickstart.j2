@@ -5,6 +5,8 @@ skipx
 
 {% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
 network --noipv6
+{% else %}
+network
 {% endif %}
 
 # The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
