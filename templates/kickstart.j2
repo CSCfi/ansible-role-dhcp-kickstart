@@ -1,6 +1,13 @@
 install
 text
+reboot
+skipx
+
+{% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
 network --noipv6
+{% else %}
+network
+{% endif %}
 
 # The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
 # Ansible has no way of accessing a group's variables, so they are accessed
@@ -22,15 +29,27 @@ repo --name={{ repo.name }} --baseurl={{ repo.url }}
 lang {{ hostvars[groups[item][0]]['kickstart_lang'] | default('en_US.UTF-8') }}
 keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1') }}
 zerombr
+{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 bootloader --location=mbr --append elevator=deadline
+{% endif %}
+{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
+bootloader --location=mbr --append="rhgb quiet crashkernel=auto"
+{% endif %}
+
 timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
 auth --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
+
+{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 selinux --disabled
-reboot
 firewall --service=ssh
-skipx
 services --enabled=ntpd
+{% endif %}
+
+{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
+selinux --permissive
+firewall --enabled --ssh
+{% endif %}
 
 {% if hostvars[groups[item][0]]['kickstart_log_host'] is defined %}
 logging --host={{ hostvars[groups[item][0]]['kickstart_log_host'] }}
@@ -43,8 +62,9 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
-{% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 %packages
+{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 @ Base
 -NetworkManager
 -NetworkManager-bluetooth
@@ -55,6 +75,7 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 -NetworkManager-glib
 -NetworkManager-team
 -NetworkManager-wwan
+{% endif %}
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
 {% endif %}
@@ -83,6 +104,8 @@ chmod 600 /root/.ssh/authorized_keys
 %end
 
 %post --interpreter /bin/bash --log /root/ks-post.log.2
+
+{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 # Add mellanox ethernet modules to autoload on boot. This way, if a host has a
 # mellanox card, it will come up in the ethernet mode.
 echo mlx4_en >>/etc/modules-load.d/mlx4.conf
@@ -95,10 +118,13 @@ modprobe bonding
 #Disable NetworkManger service
 systemctl stop NetworkManager
 systemctl disable NetworkManager
+{% endif %}
 
+{% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
 # Disable Ipv6 at the kernel level
 echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+{%endif %}
 
 {% if hostvars[groups[item][0]]['kickstart_extra_post_commands'] is defined %}
 ####### Extra POST commands
