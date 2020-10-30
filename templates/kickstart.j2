@@ -125,7 +125,9 @@ chmod 600 /root/.ssh/authorized_keys
 
 %post --interpreter /bin/bash --log /root/ks-post.log.2
 
-{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
+# No-op.
+{% else %}
 # Add mellanox ethernet modules to autoload on boot. This way, if a host has a
 # mellanox card, it will come up in the ethernet mode.
 echo mlx4_en >>/etc/modules-load.d/mlx4.conf
