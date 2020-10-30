@@ -150,11 +150,16 @@ systemctl stop NetworkManager
 systemctl disable NetworkManager
 {% endif %}
 
-{% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is sameas true %}
 # Disable Ipv6 at the kernel level
 echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
 echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
-{%endif %}
+{% elif hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is sameas false %}
+# No-op.
+{% elif dhcp_kickstart_disable_ipv6 is sameas true %}
+echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+{% endif %}
 
 {% if hostvars[groups[item][0]]['kickstart_extra_post_commands'] is defined %}
 ####### Extra POST commands
