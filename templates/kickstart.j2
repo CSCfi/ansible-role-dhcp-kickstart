@@ -17,8 +17,19 @@ skipx
 # fallback to the value of 'variable' from role defaults/main.yml.
 # Source: https://github.com/ansible/ansible/issues/6189
 
-{% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
+# A comprehensive variable lookup navigating this rather perplexing template
+# would consist of the following:
+
+# 1) First check if the variable is defined in the hostvars, and of desired value
+{% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is sameas true %}
 network --noipv6
+# 2) Then check any other desired values for the same
+{% elif hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is sameas false %}
+network
+# 3) If it wasn't defined in hostvars, we can still have a separate lookup into the role defaults for a particular value
+{% elif dhcp_kickstart_disable_ipv6 is sameas true %}
+network --noipv6
+# 4) If role default turned out to be of undesired value as well, fall back to some kind of default action.
 {% else %}
 network
 {% endif %}
