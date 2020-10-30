@@ -83,7 +83,17 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% endfor %}
 
 %packages
-{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+# Always install these packages when defined in the group_vars.
+{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
+{{ hostvars[groups[item][0]]['kickstart_packages'] }}
+{% endif %}
+# If CentOS8 is set in the group, we do a...
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
+# ...no-op.
+# For consideration: Might this be a good spot for @Core?
+{% else %}
+# Otherwise we default to CentOS7.
+# If user doesn't manage packages we provide some defaults.
 {% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 @ Base
 -NetworkManager
@@ -100,10 +110,6 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
 {% endif %}
-{% endif %}
-# Always install these packages when defined.
-{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
-{{ hostvars[groups[item][0]]['kickstart_packages'] }}
 {% endif %}
 %end
 
