@@ -3,15 +3,15 @@ text
 reboot
 skipx
 
+# The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
+# Ansible has no way of accessing a group's variables, so they are accessed
+# via the first host of the group.
+
 {% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
 network --noipv6
 {% else %}
 network
 {% endif %}
-
-# The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
-# Ansible has no way of accessing a group's variables, so they are accessed
-# via the first host of the group.
 
 {% if hostvars[groups[item][0]]['yum_proxy'] is defined %}
 url --url {{ hostvars[groups[item][0]]['install_repo'] }} --proxy={{ hostvars[groups[item][0]]['yum_proxy'] }}
