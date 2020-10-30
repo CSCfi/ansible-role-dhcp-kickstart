@@ -83,10 +83,6 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% endfor %}
 
 %packages
-# Always install these packages when defined in the group_vars.
-{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
-{{ hostvars[groups[item][0]]['kickstart_packages'] }}
-{% endif %}
 # If CentOS8 is set in the group, we do a...
 {% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is defined and hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] == '8' %}
 # ...no-op.
@@ -110,6 +106,11 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
 {% endif %}
+{% endif %}
+# Always install these packages when defined in the group_vars.
+# Here we intentionally leave this last so @Base or @Core can kick in first.
+{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
+{{ hostvars[groups[item][0]]['kickstart_packages'] }}
 {% endif %}
 %end
 
