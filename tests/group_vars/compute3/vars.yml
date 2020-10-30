@@ -6,7 +6,6 @@ serialport: "console=ttyS1,115200"
 kernel_numa_param: "off"
 dhcp_kickstart_manage_packages: "anything"
 kickstart_packages: |
-  %packages --nobase
   @core
   vim-enhanced
   openssh-clients
