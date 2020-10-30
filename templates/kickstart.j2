@@ -96,10 +96,12 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 -NetworkManager-team
 -NetworkManager-wwan
 {% endif %}
+# As an exception, this variable is not read from hostvars.
 {% if dhcp_kickstart_install_chrony == false %}
 -chrony
 {% endif %}
 {% endif %}
+# Always install these packages when defined.
 {% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
 {% endif %}
