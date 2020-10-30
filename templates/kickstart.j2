@@ -29,7 +29,7 @@ repo --name={{ repo.name }} --baseurl={{ repo.url }}
 lang {{ hostvars[groups[item][0]]['kickstart_lang'] | default('en_US.UTF-8') }}
 keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1') }}
 zerombr
-{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 bootloader --location=mbr --append elevator=deadline
 {% endif %}
 {% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
@@ -40,13 +40,13 @@ timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/He
 auth --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
 
-{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 selinux --disabled
 firewall --service=ssh
 services --enabled=ntpd
 {% endif %}
 
-{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "8" %}
 selinux --permissive
 firewall --enabled --ssh
 {% endif %}
@@ -63,7 +63,7 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {% endfor %}
 
 %packages
-{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 {% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 @ Base
 -NetworkManager
@@ -105,7 +105,7 @@ chmod 600 /root/.ssh/authorized_keys
 
 %post --interpreter /bin/bash --log /root/ks-post.log.2
 
-{% if [groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
+{% if hostvars[groups[item][0]]['dhcp_kickstart_centos_version'] is "7" %}
 # Add mellanox ethernet modules to autoload on boot. This way, if a host has a
 # mellanox card, it will come up in the ethernet mode.
 echo mlx4_en >>/etc/modules-load.d/mlx4.conf
