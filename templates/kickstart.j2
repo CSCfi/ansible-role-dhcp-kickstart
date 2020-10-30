@@ -7,6 +7,16 @@ skipx
 # Ansible has no way of accessing a group's variables, so they are accessed
 # via the first host of the group.
 
+# As per commit 9b0e011f, variables should be
+# "set for the group, so for example group_vars/groupname/vars.yml
+# it's not enough to specify them in group_vars/all.yml
+# because of how we use hostvars[] to write the kickstart templates."
+
+# This also means that role defaults will not end up in hostvars.
+# You can't refer to hostvars[groups[item][0]]['variable'] and expect it to
+# fallback to the value of 'variable' from role defaults/main.yml.
+# Source: https://github.com/ansible/ansible/issues/6189
+
 {% if hostvars[groups[item][0]]['dhcp_kickstart_disable_ipv6'] is True %}
 network --noipv6
 {% else %}
