@@ -41,6 +41,7 @@ Mandatory:
  - kernel_url_path (path where kickstart kernel and initrd can be found)
 
 Optional:
+ - bootloader_append (extra kernel parameters)
  - serialport (for during kickstart)
  - extra_kernel_params (for during kickstart)
  - dhcp_domain
