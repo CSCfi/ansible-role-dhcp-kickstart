@@ -24,7 +24,10 @@ keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1
 zerombr
 bootloader --location=mbr --append {{ hostvars[groups[item][0]]['bootloader_append'] | default('elevator=deadline') }}
 timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
+# Comment out line with command "auth" for Centos 8-Stream/RHEL8 installations, as it is deprecated.
 auth --enableshadow --passalgo=sha512
+# Uncomment line containing "authselect" for Centos 8-Stream/RHEL 8 installations, as auth is deprecated.
+# authselect --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
 selinux --disabled
 reboot
