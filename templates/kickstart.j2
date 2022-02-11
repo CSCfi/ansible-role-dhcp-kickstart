@@ -31,7 +31,7 @@ auth --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
 selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('disabled') }}
 reboot
-firewall --service=ssh
+firewall --enabled --ssh
 skipx
 services --enabled=ntpd
 
