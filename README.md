@@ -79,7 +79,8 @@ Mandatory:
  - root_keys (public ssh keys to deploy for root)
 
 Optional:
- - kernel_numa_param(can be set to off)
+ - kernel_numa_param (can be set to off)
+ - selinux_setting (sets the state of SELinux on the installed system [--disabled|--enforcing|--permissive])
 
 Touch a file to start a reinstall
 ----------------------

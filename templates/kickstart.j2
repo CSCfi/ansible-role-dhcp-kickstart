@@ -29,7 +29,7 @@ auth --enableshadow --passalgo=sha512
 # Uncomment line containing "authselect" for Centos 8-Stream/RHEL 8 installations, as auth is deprecated.
 # authselect --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
-selinux --disabled
+selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('disabled') }}
 reboot
 firewall --service=ssh
 skipx
