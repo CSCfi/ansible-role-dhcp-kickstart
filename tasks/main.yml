@@ -93,9 +93,8 @@
   when: |
     item not in dhcp_kickstart_skip_these_groups and
     groups[item][0] is defined and
-    hostvars[groups[item][0]]['os_disks'] is defined and
-    ansible_os_family == "RedHat" and
-    ansible_distribution_major_version <= "7"
+    hostvars[groups[item][0]]['os_disks'] is defined and 
+    target_centos_major_version is undefined
 
 - name: create_kickstart_group_files for Centos 8-stream nodes
   template: src=kickstart_stream8.j2 dest="/var/www/html/kickstart/{{item}}.ks" validate='/usr/bin/ksvalidator %s' backup=yes
@@ -104,9 +103,8 @@
   when: |
     item not in dhcp_kickstart_skip_these_groups and
     groups[item][0] is defined and
-    hostvars[groups[item][0]]['os_disks'] is defined and
-    ansible_os_family == 'RedHat' and
-    ansible_distribution_major_version == "8"
+    hostvars[groups[item][0]]['os_disks'] is defined 
+#    and target_centos_major_version == 8
 
 - name: copy memtest.0 PXE NBP
   copy: src=memtest.0 dest=/var/www/html/memtest.0 owner=apache group=apache mode="0440"
