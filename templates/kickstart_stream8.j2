@@ -1,0 +1,111 @@
+text
+network --noipv6
+
+# The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
+# Ansible has no way of accessing a group's variables, so they are accessed
+# via the first host of the group.
+
+{% if hostvars[groups[item][0]]['yum_proxy'] is defined %}
+url --url {{ hostvars[groups[item][0]]['install_repo'] }} --proxy={{ hostvars[groups[item][0]]['yum_proxy'] }}
+{% else %}
+url --url {{ hostvars[groups[item][0]]['install_repo'] }}
+{% endif %}
+
+{% for repo in hostvars[groups[item][0]]['additional_repos'] %}
+{% if hostvars[groups[item][0]]['yum_proxy'] is defined %}
+repo --name={{ repo.name }} --baseurl={{ repo.url }} --proxy={{ hostvars[groups[item][0]]['yum_proxy'] }}
+{% else %}
+repo --name={{ repo.name }} --baseurl={{ repo.url }}
+{% endif %}
+{% endfor %}
+lang {{ hostvars[groups[item][0]]['kickstart_lang'] | default('en_US.UTF-8') }}
+keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1') }}
+zerombr
+bootloader --location=mbr --append {{ hostvars[groups[item][0]]['bootloader_append'] | default('rhgb quiet crashkernel=auto') }}
+timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
+auth --enableshadow --passalgo=sha512
+rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
+selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('enforcing') }}
+reboot
+firewall --enabled --ssh
+skipx
+
+{% if hostvars[groups[item][0]]['kickstart_log_host'] is defined %}
+logging --host={{ hostvars[groups[item][0]]['kickstart_log_host'] }}
+{% endif %}
+
+clearpart --all --drives={{ hostvars[groups[item][0]]['os_disks'] }} --initlabel
+ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
+
+{% for line in hostvars[groups[item][0]]['kickstart_partitions'] %}
+{{ line }}
+{% endfor %}
+
+
+{% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
+%packages
+@ Base
+-alsa-firmware
+-iwl100-firmware
+-iwl1000-firmware
+-iwl105-firmware
+-iwl135-firmware
+-iwl2000-firmware
+-iwl2030-firmware
+-iwl3160-firmware
+-iwl3945-firmware
+-iwl4965-firmware
+-iwl5000-firmware
+-iwl5150-firmware
+-iwl6000-firmware
+-iwl6000g2a-firmware
+-iwl6000g2b-firmware
+-iwl6050-firmware
+-iwl7260-firmware
+python3
+{% endif %}
+
+{% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
+{{ hostvars[groups[item][0]]['kickstart_packages'] }}
+{% endif %}
+%end
+
+{% if hostvars[groups[item][0]]['kickstart_pre_option'] is defined %}
+{% if hostvars[groups[item][0]]['kickstart_extra_pre_commands'] is defined %}
+####### Extra PRE commands
+{{ hostvars[groups[item][0]]['kickstart_pre_option'] }}
+{{ hostvars[groups[item][0]]['kickstart_extra_pre_commands'] }}
+%end
+{% endif %}
+{% endif %}
+
+%post --interpreter /bin/bash --log /root/ks-post.log.1
+mkdir -p /root/.ssh
+{% for key in hostvars[groups[item][0]]['root_keys'] %}
+echo "{{ key }}" >> /root/.ssh/authorized_keys
+{% endfor %}
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/authorized_keys
+%end
+
+%post --interpreter /bin/bash --log /root/ks-post.log.2
+
+# Disable Ipv6 at the kernel level
+echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+
+{% if hostvars[groups[item][0]]['kickstart_extra_post_commands'] is defined %}
+####### Extra POST commands
+{{ hostvars[groups[item][0]]['kickstart_extra_post_commands'] }}
+{% endif %}
+
+{% if hostvars[groups[item][0]]['kickstart_grubby_remove_args'] is defined and hostvars[groups[item][0]]['kickstart_grubby_args'] is defined%}
+/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ hostvars[groups[item][0]]['kickstart_grubby_args'] }}" --remove-args="{{ hostvars[groups[item][0]]['kickstart_grubby_remove_args'] }}"
+{% elif hostvars[groups[item][0]]['kickstart_grubby_remove_args'] is not defined and hostvars[groups[item][0]]['kickstart_grubby_args'] is defined%}
+/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ hostvars[groups[item][0]]['kickstart_grubby_args'] }}"
+{% else %}
+/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ kickstart_grubby_args }}"
+{% endif %}
+# End post install kernel options update
+%end
+
