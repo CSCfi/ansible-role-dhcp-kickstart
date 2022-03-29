@@ -94,7 +94,7 @@
     - item not in dhcp_kickstart_skip_these_groups
     - groups[item][0] is defined
     - hostvars[groups[item][0]]['os_disks'] is defined
-    - hostvars[groups[item][0]]['target_os_centos_8stream'] is undefined
+    - hostvars[groups[item][0]]['target_os'] is undefined
 
 - name: create_kickstart_group_files for Centos 8-stream nodes
   template: src=kickstart_stream8.j2 dest="/var/www/html/kickstart/{{item}}.ks" validate='/usr/bin/ksvalidator %s' backup=yes
@@ -104,7 +104,8 @@
     - item not in dhcp_kickstart_skip_these_groups
     - groups[item][0] is defined
     - hostvars[groups[item][0]]['os_disks'] is defined
-    - hostvars[groups[item][0]]['target_os_centos_8stream'] is defined
+    - hostvars[groups[item][0]]['target_os'] is defined
+    - hostvars[groups[item][0]]['target_os'] == "centos_8stream"
 
 - name: copy memtest.0 PXE NBP
   copy: src=memtest.0 dest=/var/www/html/memtest.0 owner=apache group=apache mode="0440"

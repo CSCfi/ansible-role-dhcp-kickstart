@@ -2,5 +2,5 @@ kickstart_url: "http:///{{ dhcp_server_ip }}/8-stream-nodes.ks"
 kernel_url_path: "http://www.nic.funet.fi/pub/mirrors/centos.org/8-stream/BaseOS/x86_64/os/isolinux/"
 install_repo: "https://www.nic.funet.fi/pub/mirrors/centos.org/8-stream/BaseOS/x86_64/os/"
 additional_repos: ""
-target_os_centos_8stream: True
+target_os: "centos_8stream"
 os_disks: "/dev/disk/by-path/pci-0000:00:17.0-ata-1"
