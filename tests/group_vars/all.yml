@@ -22,4 +22,3 @@ kickstart_partitions:
 root_keys:
  - "ssh-rsa key"
  - "ssh-rsa key2"
-...
