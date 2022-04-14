@@ -1,4 +1,3 @@
-install
 text
 network --noipv6
 
@@ -22,16 +21,14 @@ repo --name={{ repo.name }} --baseurl={{ repo.url }}
 lang {{ hostvars[groups[item][0]]['kickstart_lang'] | default('en_US.UTF-8') }}
 keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1') }}
 zerombr
-bootloader --location=mbr --append {{ hostvars[groups[item][0]]['bootloader_append'] | default('elevator=deadline') }}
+bootloader --location=mbr --append {{ hostvars[groups[item][0]]['bootloader_append'] | default('rhgb quiet crashkernel=auto') }}
 timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
 auth --enableshadow --passalgo=sha512
-
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
-selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('disabled') }}
+selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('enforcing') }}
 reboot
 firewall --enabled --ssh
 skipx
-services --enabled=ntpd
 
 {% if hostvars[groups[item][0]]['kickstart_log_host'] is defined %}
 logging --host={{ hostvars[groups[item][0]]['kickstart_log_host'] }}
@@ -44,22 +41,30 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
+
 {% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 %packages
 @ Base
--NetworkManager
--NetworkManager-bluetooth
--NetworkManager-libnm
--NetworkManager-tui
--NetworkManager-adsl
--NetworkManager-wifi
--NetworkManager-glib
--NetworkManager-team
--NetworkManager-wwan
-{% if dhcp_kickstart_install_chrony == false %}
--chrony
+-alsa-firmware
+-iwl100-firmware
+-iwl1000-firmware
+-iwl105-firmware
+-iwl135-firmware
+-iwl2000-firmware
+-iwl2030-firmware
+-iwl3160-firmware
+-iwl3945-firmware
+-iwl4965-firmware
+-iwl5000-firmware
+-iwl5150-firmware
+-iwl6000-firmware
+-iwl6000g2a-firmware
+-iwl6000g2b-firmware
+-iwl6050-firmware
+-iwl7260-firmware
+python3
 {% endif %}
-{% endif %}
+
 {% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
 {% endif %}
@@ -84,18 +89,6 @@ chmod 600 /root/.ssh/authorized_keys
 %end
 
 %post --interpreter /bin/bash --log /root/ks-post.log.2
-# Add mellanox ethernet modules to autoload on boot. This way, if a host has a
-# mellanox card, it will come up in the ethernet mode.
-echo mlx4_en >>/etc/modules-load.d/mlx4.conf
-echo bonding >>/etc/modules-load.d/bonding.conf
-modprobe mlx4_en
-modprobe mlx4_ib
-modprobe mlx4_core
-modprobe bonding
-
-#Disable NetworkManger service
-systemctl stop NetworkManager
-systemctl disable NetworkManager
 
 # Disable Ipv6 at the kernel level
 echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
@@ -115,3 +108,4 @@ echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
 {% endif %}
 # End post install kernel options update
 %end
+

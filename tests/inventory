@@ -14,9 +14,13 @@ installnode
 [compute1]
 computenode1
 computenode11
+
 [compute2]
 computenode2
 computenode22
+
+[8-stream]
+8-streamnode
 
 [dhcp_pxe_hosts:children]
 pxe_bootable_nodes
@@ -44,3 +48,4 @@ compute3
 [compute3]
 computenode3
 computenode33
+

@@ -41,6 +41,7 @@ Mandatory:
  - kernel_url_path (path where kickstart kernel and initrd can be found)
 
 Optional:
+ - bootloader_append (extra kernel parameters)
  - serialport (for during kickstart)
  - extra_kernel_params (for during kickstart)
  - dhcp_domain
@@ -78,7 +79,8 @@ Mandatory:
  - root_keys (public ssh keys to deploy for root)
 
 Optional:
- - kernel_numa_param(can be set to off)
+ - kernel_numa_param (can be set to off)
+ - selinux_setting (sets the state of SELinux on the installed system [--disabled|--enforcing|--permissive])
 
 Touch a file to start a reinstall
 ----------------------
