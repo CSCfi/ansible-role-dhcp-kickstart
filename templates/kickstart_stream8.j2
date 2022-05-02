@@ -23,7 +23,6 @@ keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1
 zerombr
 bootloader --location=mbr --append {{ hostvars[groups[item][0]]['bootloader_append'] | default('rhgb quiet crashkernel=auto') }}
 timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
-auth --enableshadow --passalgo=sha512
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
 selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('enforcing') }}
 reboot
