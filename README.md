@@ -45,7 +45,7 @@ Optional:
  - serialport (for during kickstart)
  - extra_kernel_params (for during kickstart)
  - dhcp_domain
- - memtest86_0_path (for pointing to a memtest.0 PXE NBP)
+ - memtest86_0_path (for pointing to a memtest.0 PXE NBP or to memtest.efi PXE NBP for UEFI systems)
  - kickstart_grubby_remove_args (for adjusting grub config on default kernel at the end of the kickstart)
  - kickstart_grubby_args
  - yum_proxy (if defined is used also in the url and repo bits of the kickstart)
