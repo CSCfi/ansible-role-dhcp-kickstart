@@ -89,10 +89,6 @@ chmod 600 /root/.ssh/authorized_keys
 
 %post --interpreter /bin/bash --log /root/ks-post.log.2
 
-# Disable Ipv6 at the kernel level
-echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
-echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
-
 {% if hostvars[groups[item][0]]['kickstart_extra_post_commands'] is defined %}
 ####### Extra POST commands
 {{ hostvars[groups[item][0]]['kickstart_extra_post_commands'] }}
