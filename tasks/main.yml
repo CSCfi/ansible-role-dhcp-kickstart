@@ -50,6 +50,13 @@
   notify:
     - restart dhcpd-kickstart
 
+- name: create_dhcp6_config
+  template: src=dhcp_nodes6.conf dest="/etc/dhcp/dhcpd.d/dhcp_nodes6.conf"
+  when: groups[dhcp6_group] is defined
+  tags: dhcp6_config
+  notify:
+    - restart dhcpd6-kickstart
+
 - name: create_dhcp_ipxe_configs
   template: src=dhcp_pxe_nodes.conf dest="/etc/dhcp/dhcpd.d/dhcp_pxe_nodes.conf"
   when: groups[dhcp_pxe_group] is defined
