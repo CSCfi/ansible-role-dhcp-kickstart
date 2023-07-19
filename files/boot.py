@@ -19,7 +19,7 @@ if "gPXE" in os.environ["HTTP_USER_AGENT"]:
 def pxe_abort():
     """Abort the PXE boot, continue with the next boot device in the BIOS boot order"""
     print(PXE_HEADER)
-    print("exit")
+    print("exit 1")
     sys.exit(0)
 
 syslog.openlog("boot.py")
