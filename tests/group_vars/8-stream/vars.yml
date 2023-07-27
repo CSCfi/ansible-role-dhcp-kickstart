@@ -3,4 +3,5 @@ kernel_url_path: "http://www.nic.funet.fi/pub/mirrors/centos.org/8-stream/BaseOS
 install_repo: "https://www.nic.funet.fi/pub/mirrors/centos.org/8-stream/BaseOS/x86_64/os/"
 additional_repos: ""
 target_os: "centos_8stream"
+memtest86_0_path: "http://10.1.1.1/memtest.efi"
 os_disks: "/dev/disk/by-path/pci-0000:00:17.0-ata-1"
