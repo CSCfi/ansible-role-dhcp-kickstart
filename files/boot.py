@@ -95,9 +95,9 @@ if not STARTED:
         print(
             "kernel "
             + NODESETTINGS["kernel_url_path"]
-            + "/vmlinuz ks="
+            + "/vmlinuz inst.ks="
             + NODESETTINGS["kickstart_url"]
-            + " edd=off ksdevice=bootif kssendmac "
+            + " edd=off ksdevice=bootif inst.ks.sendmac "
             + SERIALPORT
             + " initrd=initrd.img "
             + EXTRA_KERNEL_PARAMS
