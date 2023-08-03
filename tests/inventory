@@ -22,12 +22,17 @@ computenode22
 [8-stream]
 8-streamnode
 
+[almalinux9]
+alma9node
+
 [dhcp_pxe_hosts:children]
 pxe_bootable_nodes
 slurm_compute
 
 [pxe_bootable_nodes:children]
 production
+8-stream
+almalinux9
 
 [production:children]
 install

@@ -1,6 +1,7 @@
-install
 text
 network --noipv6
+
+firstboot --disable
 
 # The hostvars[groups[item][0]]['install_repo'] pattern is used in this template
 # Ansible has no way of accessing a group's variables, so they are accessed
@@ -22,16 +23,13 @@ repo --name={{ repo.name }} --baseurl={{ repo.url }}
 lang {{ hostvars[groups[item][0]]['kickstart_lang'] | default('en_US.UTF-8') }}
 keyboard {{ hostvars[groups[item][0]]['kickstart_keyboard'] | default('fi-latin1') }}
 zerombr
-bootloader --location=mbr --append {{ hostvars[groups[item][0]]['bootloader_append'] | default('elevator=deadline') }}
-timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }}
-auth --enableshadow --passalgo=sha512
-
+bootloader --location=mbr
+timezone {{ hostvars[groups[item][0]]['kickstart_timezone'] | default('Europe/Helsinki') }} --utc
 rootpw --iscrypted {{ hostvars[groups[item][0]]['root_password_hash'] }}
-selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('disabled') }}
+selinux --{{ hostvars[groups[item][0]]['selinux_setting'] | default('enforcing') }}
 reboot
 firewall --enabled --ssh
 skipx
-services --enabled=ntpd
 
 {% if hostvars[groups[item][0]]['kickstart_log_host'] is defined %}
 logging --host={{ hostvars[groups[item][0]]['kickstart_log_host'] }}
@@ -44,22 +42,15 @@ ignoredisk --only-use={{ hostvars[groups[item][0]]['os_disks'] }}
 {{ line }}
 {% endfor %}
 
+
 {% if hostvars[groups[item][0]]['dhcp_kickstart_manage_packages'] is not defined %}
 %packages
 @ Base
--NetworkManager
--NetworkManager-bluetooth
--NetworkManager-libnm
--NetworkManager-tui
--NetworkManager-adsl
--NetworkManager-wifi
--NetworkManager-glib
--NetworkManager-team
--NetworkManager-wwan
-{% if dhcp_kickstart_install_chrony == false %}
--chrony
+-alsa-firmware
+-iwl*-firmware
+python3
 {% endif %}
-{% endif %}
+
 {% if hostvars[groups[item][0]]['kickstart_packages'] is defined %}
 {{ hostvars[groups[item][0]]['kickstart_packages'] }}
 {% endif %}
@@ -84,22 +75,6 @@ chmod 600 /root/.ssh/authorized_keys
 %end
 
 %post --interpreter /bin/bash --log /root/ks-post.log.2
-# Add mellanox ethernet modules to autoload on boot. This way, if a host has a
-# mellanox card, it will come up in the ethernet mode.
-echo mlx4_en >>/etc/modules-load.d/mlx4.conf
-echo bonding >>/etc/modules-load.d/bonding.conf
-modprobe mlx4_en
-modprobe mlx4_ib
-modprobe mlx4_core
-modprobe bonding
-
-#Disable NetworkManger service
-systemctl stop NetworkManager
-systemctl disable NetworkManager
-
-# Disable Ipv6 at the kernel level
-echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
-echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
 
 {% if hostvars[groups[item][0]]['kickstart_extra_post_commands'] is defined %}
 ####### Extra POST commands
@@ -111,7 +86,8 @@ echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
 {% elif hostvars[groups[item][0]]['kickstart_grubby_remove_args'] is not defined and hostvars[groups[item][0]]['kickstart_grubby_args'] is defined%}
 /sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ hostvars[groups[item][0]]['kickstart_grubby_args'] }}"
 {% else %}
-/sbin/grubby --update-kernel=`/sbin/grubby --default-kernel` --args="{{ kickstart_grubby_args }}"
+/sbin/grubby --update-kernel="$(/sbin/grubby --default-kernel)" --args="{{ kickstart_grubby_args }}"
 {% endif %}
 # End post install kernel options update
 %end
+
