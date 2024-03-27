@@ -22,6 +22,9 @@ computenode22
 [8-stream]
 8-streamnode
 
+[almalinux8]
+alma8node
+
 [almalinux9]
 alma9node
 
