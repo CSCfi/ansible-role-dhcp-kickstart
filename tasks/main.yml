@@ -9,6 +9,7 @@
     - hostvars[groups[item][0]]['target_os'] is defined
     - hostvars[groups[item][0]]['target_os'] != "centos7"
     - hostvars[groups[item][0]]['target_os'] != "centos_8stream"
+    - hostvars[groups[item][0]]['target_os'] != "almalinux8"
     - hostvars[groups[item][0]]['target_os'] != "almalinux9"
 
 - name: install_apache_httpd
@@ -124,7 +125,9 @@
     - groups[item][0] is defined
     - hostvars[groups[item][0]]['os_disks'] is defined
     - hostvars[groups[item][0]]['target_os'] is defined
-    - hostvars[groups[item][0]]['target_os'] == "centos_8stream" or hostvars[groups[item][0]]['target_os'] == "almalinux9"
+    - hostvars[groups[item][0]]['target_os'] == "centos_8stream" or
+      hostvars[groups[item][0]]['target_os'] == "almalinux8" or
+      hostvars[groups[item][0]]['target_os'] == "almalinux9"
 
 - name: copy memtest.0 PXE NBP
   copy: src=memtest.0 dest=/var/www/html/memtest.0 owner=apache group=apache mode="0440"

@@ -1,0 +1,9 @@
+target_os: "almalinux8"
+kernel_url_path: "http://www.nic.funet.fi/pub/mirrors/almalinux.org/8/BaseOS/x86_64/kickstart/isolinux/"
+install_repo: "https://www.nic.funet.fi/pub/mirrors/almalinux.org/8/BaseOS/x86_64/kickstart/"
+additional_repos:
+ - name: "almalinux8-baseos"
+   url: "https://www.nic.funet.fi/pub/mirrors/almalinux.org/8/BaseOS/x86_64/os/"
+memtest86_0_path: "http://10.1.1.1/memtest.efi"
+kickstart_grubby_args: "ipv6.disable=1 numa=on"
+kickstart_grubby_remove_args: "rhgb quiet"
