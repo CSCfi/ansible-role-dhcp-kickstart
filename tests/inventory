@@ -35,6 +35,7 @@ slurm_compute
 [pxe_bootable_nodes:children]
 production
 8-stream
+almalinux8
 almalinux9
 
 [production:children]
