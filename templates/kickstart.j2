@@ -1,5 +1,7 @@
 text
+{% if (hostvars[groups[item][0]]['network_noipv6'] is not defined) or (hostvars[groups[item][0]]['network_noipv6']) %}
 network --noipv6
+{% endif %}
 
 firstboot --disable
 
