@@ -1,4 +1,6 @@
 ---
+kickstart_network_options: "network --noipv6"
+
 hosts_file_pxe_group_to_populate: "{{ groups.dhcp_pxe_hosts }}"
 
 dhcp_group: "dhcp_only_hosts"

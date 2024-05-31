@@ -1,7 +1,5 @@
 text
-{% if (hostvars[groups[item][0]]['network_noipv6'] is not defined) or (hostvars[groups[item][0]]['network_noipv6']) %}
-network --noipv6
-{% endif %}
+{{ hostvars[groups[item][0]]['kickstart_network_options'] }}
 
 firstboot --disable
 
