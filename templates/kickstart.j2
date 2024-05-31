@@ -1,5 +1,5 @@
 text
-{{ hostvars[groups[item][0]]['kickstart_network_options'] }}
+{{ hostvars[groups[item][0]]['kickstart_network_options'] | default(kickstart_network_options) }}
 
 firstboot --disable
 
