@@ -1,5 +1,5 @@
 text
-network --noipv6
+{{ hostvars[groups[item][0]]['kickstart_network_options'] | default(kickstart_network_options) }}
 
 firstboot --disable
 
