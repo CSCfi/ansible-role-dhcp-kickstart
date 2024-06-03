@@ -58,6 +58,7 @@ Optional:
  - kickstart_extra_pre_option
  - kickstart_extra_pre_commands
  - kickstart_extra_post_commands
+ - kickstart_network_options (e.g. to explicitly disable IPv6 in the kickstarted operating system)
 
 The nodes which only need to be set up for DHCP need to be in the
 (by default) "dhcp_only_nodes"  group. These nodes need the following 
