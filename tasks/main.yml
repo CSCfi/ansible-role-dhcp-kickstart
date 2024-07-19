@@ -18,8 +18,9 @@
 - name: start and enable apache httpd on boot
   service: name='httpd' state=started enabled=yes
 
-#- name: install_xinetd
-#  yum: name='xinetd' state='present'
+- name: install_xinetd
+  yum: name='xinetd' state='present'
+  when: ansible_distribution_major_version < '9'
 
 - name: install_pykickstart for ksvalidator
   yum: name='pykickstart' state='present'
@@ -27,11 +28,12 @@
 - name: install_tftp-server
   yum: name='tftp-server' state='present'
 
-#- name: configure_tftp
-#  lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
+- name: configure_tftp
+  lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
+  when: ansible_distribution_major_version < '9'
 
 - name: start and enable tftp on boot
-  service: name='tftp.socket' state=started enabled=yes
+  service: name={{ 'xinetd' if ansible_distribution_major_version < '9' else 'tftp.socket' }} state=started enabled=yes
 
 - name: copy_ipxe_chainboot
   copy: src=undionly.kkpxe dest=/var/lib/tftpboot/undionly.kkpxe owner=root group=root mode="0644"
@@ -117,7 +119,7 @@
     - hostvars[groups[item][0]]['target_os'] is undefined or hostvars[groups[item][0]]['target_os'] == "centos7"
 
 - name: create_kickstart_group_files for "modern" installations
-  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks" validate='/opt/ksvalidator_wrapper %s' backup=yes
+  template: src=kickstart.j2 dest="/var/www/html/kickstart/{{item}}.ks" validate='/usr/bin/ksvalidator %s' backup=yes
   tags: dhcp_kickstart_config
   with_items: "{{ groups|sort }}"
   when:
