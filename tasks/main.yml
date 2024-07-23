@@ -20,6 +20,7 @@
 
 - name: install_xinetd
   yum: name='xinetd' state='present'
+  when: ansible_distribution_major_version < '9'
 
 - name: install_pykickstart for ksvalidator
   yum: name='pykickstart' state='present'
@@ -29,9 +30,10 @@
 
 - name: configure_tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="        disable                 = no"
+  when: ansible_distribution_major_version < '9'
 
-- name: start and enable xinetd on boot
-  service: name='xinetd' state=started enabled=yes
+- name: start and enable tftp on boot
+  service: name={{ 'xinetd' if ansible_distribution_major_version < '9' else 'tftp.socket' }} state=started enabled=yes
 
 - name: copy_ipxe_chainboot
   copy: src=undionly.kkpxe dest=/var/lib/tftpboot/undionly.kkpxe owner=root group=root mode="0644"
