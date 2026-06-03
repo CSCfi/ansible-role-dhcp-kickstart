@@ -132,4 +132,7 @@
       hostvars[groups[item][0]]['target_os'] == "almalinux9"
 
 - name: copy memtest.0 PXE NBP
-  copy: src=memtest.0 dest=/var/www/html/memtest.0 owner=apache group=apache mode="0440"
+  copy: src={{ item }} dest=/var/www/html/{{ item }} owner=apache group=apache mode="0440"
+  with_items: 
+    - memtest.0
+    - memtest.efi
